@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import Image from "next/image";
-
+import Autoplay from "embla-carousel-autoplay";
 import { Card, CardContent } from "@/components/ui/card";
 import { Carousel as CarouselDefault } from "@/components/ui/carousel"; // default export
 import type { CarouselApi } from "@/components/ui/carousel"; // type only
@@ -163,6 +163,3 @@ const CarouselCard = ({ el }: { el: HallType }) => {
     </CarouselItem>
   );
 };
-function Autoplay(arg0: { delay: number }): any {
-  throw new Error("Function not implemented.");
-}
