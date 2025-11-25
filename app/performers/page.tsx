@@ -1,8 +1,10 @@
 "use client";
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { FaStar } from "react-icons/fa";
 
 export default function PerformersPage() {
+  const router = useRouter();
   const [performers, setPerformers] = useState<any[]>([]);
   const [selectedGenres, setSelectedGenres] = useState<string[]>([]);
   const [selectedAvailability, setSelectedAvailability] = useState<string[]>(
@@ -195,10 +197,20 @@ export default function PerformersPage() {
                       </span>
                     </div>
 
-                    {/* View Profile Button */}
-                    <button className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg transition-colors">
-                      View Profile
-                    </button>
+                    {/* Action Buttons */}
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() =>
+                          router.push(`/performers/${performer.id}`)
+                        }
+                        className="flex-1 bg-gray-800 hover:bg-gray-700 text-white py-2 rounded-lg transition-colors border border-blue-600"
+                      >
+                        View Profile
+                      </button>
+                      <button className="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg transition-colors">
+                        Book Now
+                      </button>
+                    </div>
                   </div>
                 </div>
               ))}
