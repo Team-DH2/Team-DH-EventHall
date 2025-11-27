@@ -1,7 +1,9 @@
-import React from "react";
+import EventHalls from "./nasocomponent/EventHalls";
 
-const page = () => {
-  return <div>page</div>;
-};
-
-export default page;
+export default function Home() {
+  return (
+    <div>
+      <EventHalls />
+    </div>
+  );
+}
