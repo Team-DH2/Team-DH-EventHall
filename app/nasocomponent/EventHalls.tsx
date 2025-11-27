@@ -26,7 +26,7 @@ export default function EventHalls() {
               alt={hall.name}
             />
             <div className="p-4 flex flex-col gap-3">
-              <h2 className="text-xl font-semibold">{hall.name}</h2>
+              <h2 className="text-xl font-semibold">{hall.name}dsds</h2>
 
               <div className="flex items-center gap-2 text-gray-400">
                 <MapPin size={18} />
