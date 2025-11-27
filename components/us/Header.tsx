@@ -13,10 +13,12 @@ import {
 } from "lucide-react";
 import { Logo } from "./Logo";
 import { BottomNavButton } from "./BottomNavButton";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export const Header = () => {
   const [isPhoneSearchOpen, setIsPhoneSearchOpen] = React.useState(false);
-
+  const router = useRouter();
   return (
     <>
       {/* ---------------- DESKTOP HEADER ---------------- */}
@@ -28,8 +30,14 @@ export const Header = () => {
 
         {/* Centered Navigation */}
         <div className="flex items-center gap-4 font-bold">
-          <ButtonOfNav text="Home" />
-          <ButtonOfNav text="Event Halls" />
+          <Link href="/home">
+            <ButtonOfNav text="Home" />
+          </Link>
+
+          <Link href="/eventhalls">
+            <ButtonOfNav text="Event Halls" />
+          </Link>
+
           <ButtonOfNav text="Performers" />
           <ButtonOfNav text="Hosts" />
           <ButtonOfNav text="Dashboard" />
