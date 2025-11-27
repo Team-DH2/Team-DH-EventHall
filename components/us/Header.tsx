@@ -2,7 +2,15 @@
 import React from "react";
 import { ButtonOfNav } from "./ButtonOfNav";
 import { Input } from "../ui/input";
-import { Search, X } from "lucide-react";
+import {
+  Search,
+  X,
+  Home,
+  Building,
+  Music,
+  Users,
+  LayoutDashboard,
+} from "lucide-react";
 import { Logo } from "./Logo";
 import { BottomNavButton } from "./BottomNavButton";
 
@@ -12,33 +20,33 @@ export const Header = () => {
   return (
     <>
       {/* ---------------- DESKTOP HEADER ---------------- */}
-      <div className="hidden lg:flex text-white w-full h-20 items-center justify-between bg-black/50 backdrop-blur-sm">
-        <Logo />
+      <div className="hidden lg:flex text-white w-full h-20 items-center justify-between bg-black/50 backdrop-blur-sm px-10">
+        {/* Left Side */}
+        <div className="flex-1 flex justify-start">
+          <Logo />
+        </div>
 
-        <div className="hidden font-bold w-200 justify-between lg:flex items-center">
-          <div className="ml-5">
-            <ButtonOfNav text="Home" />
-          </div>
+        {/* Centered Navigation */}
+        <div className="flex items-center gap-4 font-bold">
+          <ButtonOfNav text="Home" />
           <ButtonOfNav text="Event Halls" />
           <ButtonOfNav text="Performers" />
           <ButtonOfNav text="Hosts" />
           <ButtonOfNav text="Dashboard" />
-          <div className="mr-5">
-            <ButtonOfNav text="Contact" />
-          </div>
+          <ButtonOfNav text="Contact" />
         </div>
 
-        <div className="flex mr-10 items-center justify-between w-full lg:w-auto gap-3">
-          <div className="flex items-center">
+        {/* Right Side */}
+        <div className="flex-1 flex justify-end items-center gap-3">
+          <div className="flex items-center w-full max-w-[220px]">
             <Search className="mr-[-36] w-5 z-10 text-neutral-500" />
             <Input
               placeholder="Search..."
-              className="pl-10 h-10 rounded-[20px] bg-neutral-800 border-none"
+              className="pl-10 h-10 rounded-[20px] bg-neutral-800 border-none w-full text-sm"
             />
           </div>
-
-          <div className="flex gap-2">
-            <button className="bg-black rounded-md h-10 px-4 text-sm">
+          <div className="flex items-center gap-2">
+            <button className="bg-transparent rounded-md h-10 px-4 text-sm">
               LogIn
             </button>
             <button className="bg-blue-600 rounded-md px-4 h-10 text-sm">
@@ -49,7 +57,7 @@ export const Header = () => {
       </div>
 
       {/* ---------------- MOBILE/TABLET HEADER ---------------- */}
-      <div className="flex lg:hidden text-white w-full h-16 items-center px-4 bg-black/50 border-b border-neutral-800">
+      <div className="flex lg:hidden text-white w-full h-16 items-center px-4 bg-black/50 ">
         {/* LEFT SIDE: Logo OR X Button */}
         {!isPhoneSearchOpen ? (
           <Logo />
@@ -67,7 +75,7 @@ export const Header = () => {
               <Search className="mr-[-36] w-5 z-10 text-neutral-500" />
               <Input
                 placeholder="Search..."
-                className="w-full pl-10 h-9 rounded-[20px] bg-neutral-900 border border-neutral-700 text-white"
+                className="w-full pl-10 h-9 rounded-[20px] bg-neutral-800 border-none text-white text-sm"
               />
             </div>
           )}
@@ -80,7 +88,7 @@ export const Header = () => {
               className="w-6 h-6 text-neutral-300 hover:text-white"
               onClick={() => setIsPhoneSearchOpen(true)}
             />
-            <button className="bg-neutral-900 rounded-md h-9 px-3 text-xs border border-neutral-700">
+            <button className="bg-transparent rounded-md h-9 px-3 text-xs">
               LogIn
             </button>
             <button className="bg-blue-600 rounded-md px-3 h-9 text-xs">
@@ -93,14 +101,32 @@ export const Header = () => {
       </div>
 
       {/* ---------------- MOBILE/TABLET BOTTOM NAV ---------------- */}
-      {/* ---------------- MOBILE/TABLET BOTTOM NAV ---------------- */}
-      <div className="fixed bottom-0 left-0 right-0 lg:hidden flex justify-around items-center h-16 bg-black border-t border-neutral-800 z-50">
-        <BottomNavButton text="Home" />
-        <BottomNavButton text="Event Halls" />
-        <BottomNavButton text="Performers" />
-        <BottomNavButton text="Hosts" />
-        <BottomNavButton text="Dashboard" />
-        <BottomNavButton text="Contact" />
+      <div className="fixed bottom-0 left-0 right-0 lg:hidden flex justify-around items-center h-16 bg-black/50 border-t border-neutral-800 z-50">
+        <BottomNavButton
+          href="/"
+          label="Home"
+          icon={<Home className="w-5 h-5" />}
+        />
+        <BottomNavButton
+          href="/event-halls"
+          label="Halls"
+          icon={<Building className="w-5 h-5" />}
+        />
+        <BottomNavButton
+          href="/performers"
+          label="Performers"
+          icon={<Music className="w-5 h-5" />}
+        />
+        <BottomNavButton
+          href="/hosts"
+          label="Hosts"
+          icon={<Users className="w-5 h-5" />}
+        />
+        <BottomNavButton
+          href="/dashboard"
+          label="Dashboard"
+          icon={<LayoutDashboard className="w-5 h-5" />}
+        />
       </div>
     </>
   );
