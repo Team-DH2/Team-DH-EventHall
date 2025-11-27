@@ -94,11 +94,6 @@ export function LayoutFooter() {
                   Арга хэмжээ төлөвлөлт
                 </a>
               </li>
-              <li>
-                <a href="#" className="hover:text-white">
-                  Зөвлөгөө
-                </a>
-              </li>
             </ul>
           </div>
 
@@ -108,16 +103,11 @@ export function LayoutFooter() {
             <ul className="space-y-3 text-sm">
               <li className="flex items-center gap-2">
                 <Phone size={18} className="text-blue-400" />
-                +1 (555) 123-4567
+                +976 1234 5678
               </li>
               <li className="flex items-center gap-2">
                 <Mail size={18} className="text-blue-400" />
-                info@eventlux.com
-              </li>
-              <li>
-                123 Event Avenue,
-                <br />
-                Luxury City, EC 00000
+                ochkoking@gmail.com
               </li>
             </ul>
           </div>
