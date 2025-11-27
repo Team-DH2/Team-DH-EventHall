@@ -18,8 +18,8 @@ export function LayoutFooter() {
           <div>
             <h2 className="text-lg font-semibold mb-4">EventLux</h2>
             <p className="text-sm text-gray-400 leading-relaxed">
-              EventLux бол тансаг зэрэглэлийн арга хэмжээ зохион байгуулалтын
-              таны итгэмжлэгдсэн платформ юм.
+              EventLux бол тансаг зэрdfdfэглэлийн арга хэмжээ зохион
+              байгуулалтын таны итгэмжлэгдсэн платформ юм.
             </p>
 
             <div className="flex gap-4 mt-6">
