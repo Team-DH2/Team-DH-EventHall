@@ -1,35 +1,34 @@
+"use client";
+
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import React from "react";
 
 interface BottomNavButtonProps {
-  text: string;
-  active?: boolean;
-  onClick?: () => void;
+  href: string;
+  label: string;
+  icon: React.ReactNode;
 }
 
 export const BottomNavButton = ({
-  text,
-  active = false,
-  onClick,
+  href,
+  label,
+  icon,
 }: BottomNavButtonProps) => {
+  const pathname = usePathname();
+  const isActive = pathname === href;
+
   return (
-    <div
-      className="flex flex-col items-center justify-center w-full group cursor-pointer"
-      onClick={onClick}
+    <Link
+      href={href}
+      className={`flex flex-col items-center justify-center gap-1 p-2 text-xs transition-all duration-200 ease-in-out transform ${
+        isActive
+          ? "text-white"
+          : "text-neutral-400 hover:text-blue-600 hover:-translate-y-1"
+      }`}
     >
-      <button
-        className={`w-10 h-10 rounded-full mb-1 transition-colors ${
-          active ? "bg-blue-600" : "bg-neutral-900 group-hover:bg-blue-600"
-        }`}
-      ></button>
-      <span
-        className={`text-[10px] transition-colors ${
-          active
-            ? "text-blue-600"
-            : "text-neutral-400 group-hover:text-blue-600"
-        }`}
-      >
-        {text}
-      </span>
-    </div>
+      {icon}
+      <span>{label}</span>
+    </Link>
   );
 };
