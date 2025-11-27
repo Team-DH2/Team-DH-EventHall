@@ -3,9 +3,8 @@ import React from "react";
 import { ButtonOfNav } from "./ButtonOfNav";
 import { Input } from "../ui/input";
 import { Search, X } from "lucide-react";
-
-import { BottomNavButton } from "./BottomNavButton";
 import { Logo } from "./Logo";
+import { BottomNavButton } from "./BottomNavButton";
 
 export const Header = () => {
   const [isPhoneSearchOpen, setIsPhoneSearchOpen] = React.useState(false);
