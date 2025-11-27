@@ -1,7 +1,6 @@
 "use client";
 import { useState } from "react";
 import { MapPin, Star, Users } from "lucide-react";
-
 import { mockEventHalls } from "./Mock";
 import { Button } from "@/components/ui/button";
 import EventHallsPage from "./Chat";
@@ -10,7 +9,7 @@ export default function EventHalls() {
   const [filteredHalls, setFilteredHalls] = useState(mockEventHalls);
 
   return (
-    <div className="w-full min-h-screen bg-black text-white p-10 flex gap-10">
+    <div className="w-full min-h-screen bg-black text-white p-10 flex gap-10 mt-20">
       {/* Filter */}
       <EventHallsPage onFilterChange={setFilteredHalls} />
 

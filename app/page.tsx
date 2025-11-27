@@ -1,9 +1,8 @@
-import EventHalls from "./nasocomponent/EventHalls";
-
+import Contact from "./contact/Contact";
 export default function Home() {
   return (
     <div>
-      <EventHalls />
+      <Contact></Contact>
     </div>
   );
 }
