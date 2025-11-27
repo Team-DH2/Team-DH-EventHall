@@ -1,3 +1,9 @@
+import EventHalls from "./nasocomponent/EventHalls";
+
 export default function Home() {
-  return <div></div>;
+  return (
+    <div>
+      <EventHalls />
+    </div>
+  );
 }
