@@ -9,7 +9,6 @@ const DateForm = ({
   hallId: string | number;
   selected: any;
 }) => {
-  const [guestCount, setGuestCount] = useState<number | "">("");
   const [eventType, setEventType] = useState<string>("");
   const [menuType, setMenuType] = useState<string>("");
   const [additionalInfo, setAdditionalInfo] = useState<string>("");
@@ -70,9 +69,15 @@ const DateForm = ({
           className="mt-2 p-4 w-full border rounded-lg text-lg text-[#0A1633] bg-white"
         >
           <option value="">Сонгох</option>
-          <option>Үдийн цай</option>
           <option>Хурим</option>
-          <option>Тэмдэглэлт өдөр</option>
+          <option>Төрсөн өдөр</option>
+          <option>Одонгийн найр</option>
+          <option>Хонхны баяр</option>
+          <option>Сэвлэг үргээх ёслол</option>
+          <option>Тэмцээн уралдаан</option>
+          <option>Бага хурал</option>
+          <option>Үзүүлбэр шоу</option>
+          <option>Эвент арга хэмжээ</option>
         </select>
       </div>
 

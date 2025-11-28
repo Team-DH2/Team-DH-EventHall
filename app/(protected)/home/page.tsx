@@ -60,7 +60,7 @@ export default function Page() {
 
   return (
     <>
-      <CarouselMy halls={halls} />
+      {/* <CarouselMy halls={halls} /> */}
       <Hero />
       <Footer />
     </>
