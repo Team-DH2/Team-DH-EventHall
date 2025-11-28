@@ -14,30 +14,17 @@ model User {
   password  String    @db.VarChar(255)
   role      String    @db.VarChar(50)
   createdat DateTime? @default(now()) @db.Timestamp(6)
-}
-
-model bookings {
-  id                Int          @id @default(autoincrement())
-  event_hall_id     Int?
-  host_id           Int?
-  booking_date      DateTime     @db.Date
-  booking_time      DateTime     @db.Time(6)
-  event_description String?
-  status            String?      @default("pending") @db.VarChar(50)
-  created_at        DateTime?    @default(now()) @db.Timestamp(6)
-  updated_at        DateTime?    @default(now()) @db.Timestamp(6)
-  event_halls       event_halls? @relation(fields: [event_hall_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
-  hosts             hosts?       @relation(fields: [host_id], references: [id], onUpdate: NoAction)
+  booking   booking[]
 }
 
 model event_halls {
-  id                      Int          @id @default(autoincrement())
-  name                    String       @db.VarChar(255)
-  location                String?      @db.VarChar(255)
+  id                      Int       @id @default(autoincrement())
+  name                    String    @db.VarChar(255)
+  location                String?   @db.VarChar(255)
   capacity                String?
   description             String?
   suitable_events         String[]
-  created_at              DateTime?    @default(now()) @db.Timestamp(6)
+  created_at              DateTime? @default(now()) @db.Timestamp(6)
   images                  String[]
   phonenumber             String?
   menu                    String[]
@@ -45,16 +32,15 @@ model event_halls {
   additional_informations String[]
   informations_about_hall String[]
   advantages              String[]
-  bookings                bookings[]
-  time_slots              time_slots[]
+  booking                 booking[]
 }
 
 model hosts {
-  id            Int        @id @default(autoincrement())
-  name          String     @db.VarChar(255)
-  contact_email String?    @db.VarChar(255)
-  contact_phone String?    @db.VarChar(50)
-  bookings      bookings[]
+  id            Int       @id @default(autoincrement())
+  name          String    @db.VarChar(255)
+  contact_email String?   @db.VarChar(255)
+  contact_phone String?   @db.VarChar(50)
+  booking       booking[]
 }
 
 model performers {
@@ -69,15 +55,28 @@ model performers {
   availability     String?   @db.VarChar(50)
   image            String?
   rating           Float?
+  price            Decimal   @default(500000) @db.Decimal(12, 0)
+  booking          booking[]
 }
 
-model time_slots {
-  id            Int          @id @default(autoincrement())
-  event_hall_id Int?
-  slot_start    DateTime     @db.Timestamp(6)
-  slot_end      DateTime     @db.Timestamp(6)
-  is_available  Boolean?     @default(true)
-  created_at    DateTime?    @default(now()) @db.Timestamp(6)
-  slot_date     DateTime?    @db.Date
-  event_halls   event_halls? @relation(fields: [event_hall_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+model booking {
+  id           Int           @id @default(autoincrement())
+  userid       Int
+  hallid       Int?
+  performersid Int?
+  hostid       Int?
+  ordereddate  DateTime?     @db.Date
+  date         DateTime      @db.Timestamp(6)
+  starttime    String?
+  endtime      String?
+  status       bookingstatus
+  event_halls  event_halls?  @relation(fields: [hallid], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  hosts        hosts?        @relation(fields: [hostid], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  performers   performers?   @relation(fields: [performersid], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  User         User          @relation(fields: [userid], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+enum bookingstatus {
+  pending
+  approved
 }

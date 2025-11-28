@@ -54,6 +54,40 @@ export default function PerformersPage() {
     }
   };
 
+  const getPerformerImage = (performer: any) => {
+    // Map genres to realistic performer images
+    const genre = performer.genre?.toLowerCase() || "";
+    const performanceType = performer.performance_type?.toLowerCase() || "";
+
+    if (genre.includes("jazz")) {
+      return "https://cdn.pixabay.com/photo/2016/11/19/15/32/audience-1839719_1280.jpg";
+    } else if (genre.includes("hip-hop") || genre.includes("rap")) {
+      return "https://cdn.pixabay.com/photo/2017/08/06/22/01/hip-hop-2597611_1280.jpg";
+    } else if (genre.includes("classical")) {
+      return "https://cdn.pixabay.com/photo/2016/11/22/19/17/concert-1850119_1280.jpg";
+    } else if (genre.includes("rock") || genre.includes("metal")) {
+      return "https://cdn.pixabay.com/photo/2016/11/23/15/48/audience-1853662_1280.jpg";
+    } else if (genre.includes("pop")) {
+      return "https://cdn.pixabay.com/photo/2016/11/18/15/44/audience-1835431_1280.jpg";
+    } else if (
+      genre.includes("electronic") ||
+      genre.includes("edm") ||
+      performanceType.includes("dj")
+    ) {
+      return "https://cdn.pixabay.com/photo/2017/03/10/20/54/dj-2133476_1280.jpg";
+    } else if (genre.includes("folk") || genre.includes("traditional")) {
+      return "https://cdn.pixabay.com/photo/2016/11/19/15/40/woman-1839869_1280.jpg";
+    } else if (
+      performanceType.includes("singer") ||
+      performanceType.includes("vocalist")
+    ) {
+      return "https://cdn.pixabay.com/photo/2016/11/18/15/23/singing-1835328_1280.jpg";
+    }
+
+    // Default music performer image
+    return "https://cdn.pixabay.com/photo/2016/11/22/21/42/acoustic-1850791_1280.jpg";
+  };
+
   return (
     <div className="min-h-screen bg-black text-white">
       <div className="container mx-auto px-4 py-8">
@@ -167,9 +201,7 @@ export default function PerformersPage() {
                   {/* Performer Image */}
                   <div className="relative h-64 bg-gray-800">
                     <img
-                      src={
-                        performer.image || "https://via.placeholder.com/400x300"
-                      }
+                      src={getPerformerImage(performer)}
                       alt={performer.name}
                       className="w-full h-full object-cover"
                     />
