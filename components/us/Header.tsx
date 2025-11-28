@@ -14,11 +14,10 @@ import {
 import { Logo } from "./Logo";
 import { BottomNavButton } from "./BottomNavButton";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 
 export const Header = () => {
   const [isPhoneSearchOpen, setIsPhoneSearchOpen] = React.useState(false);
-  const router = useRouter();
+
   return (
     <>
       {/* ---------------- DESKTOP HEADER ---------------- */}
@@ -41,7 +40,9 @@ export const Header = () => {
           <ButtonOfNav text="Performers" />
           <ButtonOfNav text="Hosts" />
           <ButtonOfNav text="Dashboard" />
-          <ButtonOfNav text="Contact" />
+          <Link href="/Contact">
+            <ButtonOfNav text="Contact" />
+          </Link>
         </div>
 
         {/* Right Side */}
