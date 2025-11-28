@@ -1,4 +1,5 @@
 "use client";
+import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 
 export default function BookingPage() {
@@ -10,6 +11,37 @@ export default function BookingPage() {
       .then((data) => setBookings(data.bookings));
   }, []);
   console.log({ bookings });
+  const DeleteBooking = async (id: string | number) => {
+    try {
+      const response = await fetch("/api/reset-bookings", {
+        // таны API замыг зөв тохируулна
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ id }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        console.error("Failed to delete booking:", data.error);
+        alert("Failed to delete booking: " + data.error);
+        return;
+      }
+
+      console.log(data.message);
+      alert(data.message);
+      setBookings((prev) => prev.filter((booking: any) => booking.id !== id));
+
+      // Хэрэв React state-д bookings байгаа бол шинэчлэх боломжтой:
+      // setBookings(prev => prev.filter(booking => booking.id !== id));
+    } catch (error) {
+      console.error("Error deleting booking:", error);
+      alert("Error deleting booking");
+    }
+  };
+
   return (
     <div className="p-6">
       <h1 className="text-2xl font-bold mb-5">Таны захиалсан Event hall</h1>
@@ -69,6 +101,9 @@ export default function BookingPage() {
               <p className="text-gray-500 text-sm">
                 📍 {b.event_halls?.location}
               </p>
+              <Button onClick={() => DeleteBooking(b.id)}>
+                Zahialaga tsutslah
+              </Button>
             </div>
           </div>
         ))}
