@@ -3,28 +3,45 @@
 import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import DateForm from "./DateForm";
-
 function generateCalendar(year: number, month: number) {
   const firstDay = new Date(year, month, 1);
   const lastDay = new Date(year, month + 1, 0);
 
-  const weeks: (number | null)[][] = [];
-  let currentWeek: (number | null)[] = [];
+  const prevLastDay = new Date(year, month, 0).getDate();
 
-  const startDay = firstDay.getDay();
-  for (let i = 0; i < startDay; i++) currentWeek.push(null);
+  // ☑️ Sunday=0 → Monday=0 болгох
+  const startDay = (firstDay.getDay() + 6) % 7;
 
+  const weeks: { day: number; current: boolean }[][] = [];
+  let currentWeek: { day: number; current: boolean }[] = [];
+
+  // ----- ӨМНӨХ САРЫН ӨДРҮҮД -----
+  for (let i = 0; i < startDay; i++) {
+    currentWeek.push({
+      day: prevLastDay - (startDay - 1 - i),
+      current: false,
+    });
+  }
+
+  // ----- Одоогийн сар -----
   for (let d = 1; d <= lastDay.getDate(); d++) {
-    currentWeek.push(d);
+    currentWeek.push({ day: d, current: true });
+
     if (currentWeek.length === 7) {
       weeks.push(currentWeek);
       currentWeek = [];
     }
   }
+
+  // ----- ДАРААГИЙН САРЫН ӨДРҮҮД -----
   if (currentWeek.length > 0) {
-    while (currentWeek.length < 7) currentWeek.push(null);
+    let nextDay = 1;
+    while (currentWeek.length < 7) {
+      currentWeek.push({ day: nextDay++, current: false });
+    }
     weeks.push(currentWeek);
   }
+
   return weeks;
 }
 
@@ -139,13 +156,13 @@ export default function BookingCalendar({
   };
 
   const daysOfWeek = [
-    "Ням",
     "Даваа",
     "Мягмар",
     "Лхагва",
     "Пүрэв",
     "Баасан",
     "Бямба",
+    "Ням",
   ];
   const weeks = generateCalendar(currentYear, currentMonth);
 
@@ -177,20 +194,25 @@ export default function BookingCalendar({
         <div className="grid grid-cols-7 gap-2">
           {weeks.map((week, i) => (
             <React.Fragment key={i}>
-              {week.map((day, j) => {
-                if (!day)
+              {week.map((dayObj, j) => {
+                const { day, current } = dayObj;
+
+                // Одоогийн сар биш бол disabled хийж өгнө
+                if (!current) {
                   return (
                     <div
                       key={j}
-                      className="min-h-[110px] bg-gray-200 rounded-xl"
-                    ></div>
+                      className="min-h-[110px] bg-gray-200/60 rounded-xl text-white p-2"
+                    >
+                      {day}
+                    </div>
                   );
+                }
 
                 const dateStr = `${currentYear}-${String(
                   currentMonth + 1
                 ).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
 
-                // Өдөр захиалга байгаа эсэхийг шалгах (Өдөрөөр нь = 9 цаг)
                 const isDayBooked = bookings.some(
                   (b) =>
                     new Date(b.date).toISOString().split("T")[0] === dateStr &&
