@@ -191,7 +191,6 @@ export default function Contact() {
 
         {/* INQUIRY FORM */}
         <div className="bg-neutral-900 rounded-2xl w-full mt-24 py-20 flex flex-col items-center px-6">
-          <div></div>
           <h1 className="text-5xl md:text-6xl font-extrabold mb-4">
             Send Us Your Inquiry
           </h1>
