@@ -28,11 +28,11 @@ export default function PerformerDetailPage() {
 
   const getAvailabilityColor = (availability: string) => {
     switch (availability) {
-      case "Available":
+      case "Боломжтой":
         return "bg-green-600";
-      case "On Request":
+      case "Хүлээгдэж байна":
         return "bg-yellow-600";
-      case "Booked":
+      case "Захиалагдсан":
         return "bg-red-600";
       default:
         return "bg-gray-600";
@@ -42,7 +42,7 @@ export default function PerformerDetailPage() {
   if (loading) {
     return (
       <div className="min-h-screen bg-black text-white flex items-center justify-center">
-        <div className="text-xl">Loading...</div>
+        <div className="text-xl">Уншиж байна...</div>
       </div>
     );
   }
@@ -51,12 +51,12 @@ export default function PerformerDetailPage() {
     return (
       <div className="min-h-screen bg-black text-white flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-2xl mb-4">Performer not found</h1>
+          <h1 className="text-2xl mb-4">Уран бүтээлч олдсонгүй</h1>
           <button
             onClick={() => router.push("/performers")}
             className="bg-blue-600 hover:bg-blue-700 px-6 py-2 rounded-lg transition-colors"
           >
-            Back to Performers
+            Буцах
           </button>
         </div>
       </div>
@@ -71,7 +71,7 @@ export default function PerformerDetailPage() {
           onClick={() => router.push("/performers")}
           className="flex items-center gap-2 text-gray-400 hover:text-white mb-6 transition-colors"
         >
-          <FaArrowLeft /> Back to Performers
+          <FaArrowLeft /> Буцах
         </button>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -89,7 +89,7 @@ export default function PerformerDetailPage() {
                     performer.availability || "Available"
                   )} text-white px-4 py-2 rounded-full text-sm font-semibold`}
                 >
-                  {performer.availability || "Available"}
+                  {performer.availability || "Боломжтой"}
                 </div>
               </div>
 
@@ -99,18 +99,20 @@ export default function PerformerDetailPage() {
                   {performer.performance_type || performer.genre}
                 </p>
 
-                {/* Rating */}
+                {/* Viberate Popularity */}
                 <div className="flex items-center gap-2 mb-6">
                   <FaStar className="text-yellow-400 text-xl" />
                   <span className="text-2xl font-semibold">
-                    {performer.rating || "4.5"}
+                    {performer.popularity
+                      ? Number(performer.popularity).toLocaleString()
+                      : "N/A"}
                   </span>
-                  <span className="text-gray-400">/5</span>
+                  <span className="text-gray-400 text-sm">Viberate</span>
                 </div>
 
                 {/* Book Now Button */}
                 <button className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg transition-colors font-semibold text-lg">
-                  Book Now
+                  Захиалах
                 </button>
               </div>
             </div>
@@ -121,17 +123,17 @@ export default function PerformerDetailPage() {
             <div className="bg-gray-900 rounded-lg p-8">
               {/* About Section */}
               <section className="mb-8">
-                <h2 className="text-2xl font-bold mb-4">About</h2>
+                <h2 className="text-2xl font-bold mb-4">Танилцуулга</h2>
                 <p className="text-gray-300 leading-relaxed">
                   {performer.bio ||
-                    "No biography available for this performer."}
+                    "Энэ уран бүтээлчийн талаар мэдээлэл байхгүй байна."}
                 </p>
               </section>
 
               {/* Genre Section */}
               {performer.genre && (
                 <section className="mb-8">
-                  <h2 className="text-2xl font-bold mb-4">Genre</h2>
+                  <h2 className="text-2xl font-bold mb-4">Төрөл</h2>
                   <div className="flex flex-wrap gap-2">
                     {performer.genre
                       .split(",")
@@ -150,14 +152,16 @@ export default function PerformerDetailPage() {
               {/* Performance Type */}
               {performer.performance_type && (
                 <section className="mb-8">
-                  <h2 className="text-2xl font-bold mb-4">Performance Type</h2>
+                  <h2 className="text-2xl font-bold mb-4">Тоглолтын төрөл</h2>
                   <p className="text-gray-300">{performer.performance_type}</p>
                 </section>
               )}
 
               {/* Contact Information */}
               <section className="mb-8">
-                <h2 className="text-2xl font-bold mb-4">Contact Information</h2>
+                <h2 className="text-2xl font-bold mb-4">
+                  Холбоо барих мэдээлэл
+                </h2>
                 <div className="space-y-4">
                   {performer.contact_email && (
                     <div className="flex items-center gap-3">
@@ -186,16 +190,18 @@ export default function PerformerDetailPage() {
 
               {/* Additional Details */}
               <section>
-                <h2 className="text-2xl font-bold mb-4">Details</h2>
+                <h2 className="text-2xl font-bold mb-4">Дэлгэрэнгүй</h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="bg-gray-800 p-4 rounded-lg">
-                    <h3 className="text-gray-400 text-sm mb-1">Availability</h3>
+                    <h3 className="text-gray-400 text-sm mb-1">
+                      Боломжтой эсэх
+                    </h3>
                     <p className="font-semibold">
-                      {performer.availability || "Available"}
+                      {performer.availability || "Боломжтой"}
                     </p>
                   </div>
                   <div className="bg-gray-800 p-4 rounded-lg">
-                    <h3 className="text-gray-400 text-sm mb-1">Member Since</h3>
+                    <h3 className="text-gray-400 text-sm mb-1">Элссэн огноо</h3>
                     <p className="font-semibold">
                       {performer.created_at
                         ? new Date(performer.created_at).toLocaleDateString()

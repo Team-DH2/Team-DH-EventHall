@@ -6,28 +6,44 @@ import { FaStar } from "react-icons/fa";
 export default function PerformersPage() {
   const router = useRouter();
   const [performers, setPerformers] = useState<any[]>([]);
+  const [genres, setGenres] = useState<string[]>([]);
   const [selectedGenres, setSelectedGenres] = useState<string[]>([]);
   const [selectedAvailability, setSelectedAvailability] = useState<string[]>(
     []
   );
-  const [minRating, setMinRating] = useState<number>(0);
+  const [minPopularity, setMinPopularity] = useState<number>(0);
+  const [minPrice, setMinPrice] = useState<number>(0);
+  const [maxPrice, setMaxPrice] = useState<number>(100000000);
+  const [sortBy, setSortBy] = useState<string>("popularity");
 
   useEffect(() => {
     fetchPerformers();
+    fetchGenres();
   }, []);
 
   const fetchPerformers = async () => {
     try {
       const res = await fetch("/api/performers");
       const data = await res.json();
+      console.log("Fetched performers:", data.performers?.length || 0);
+      console.log("First performer:", data.performers?.[0]);
       setPerformers(data.performers || []);
     } catch (error) {
       console.error("Error fetching performers:", error);
     }
   };
 
-  const genres = ["Latin", "Hip-Hop", "Classical", "Jazz", "Rock", "Pop"];
-  const availabilityOptions = ["Available", "On Request", "Booked"];
+  const fetchGenres = async () => {
+    try {
+      const res = await fetch("/api/performers/genres");
+      const data = await res.json();
+      setGenres(data.genres || []);
+    } catch (error) {
+      console.error("Error fetching genres:", error);
+    }
+  };
+
+  const availabilityOptions = ["Боломжтой", "Хүлээгдэж байна", "Захиалагдсан"];
 
   const filteredPerformers = performers.filter((performer) => {
     const genreMatch =
@@ -36,18 +52,39 @@ export default function PerformersPage() {
     const availabilityMatch =
       selectedAvailability.length === 0 ||
       selectedAvailability.includes(performer.availability);
-    const ratingMatch = (performer.rating || 0) >= minRating;
+    const popularityMatch = (performer.popularity || 0) >= minPopularity;
+    const priceMatch =
+      Number(performer.price) >= minPrice &&
+      Number(performer.price) <= maxPrice;
 
-    return genreMatch && availabilityMatch && ratingMatch;
+    return genreMatch && availabilityMatch && popularityMatch && priceMatch;
   });
+
+  // Sort performers
+  const sortedPerformers = [...filteredPerformers].sort((a, b) => {
+    if (sortBy === "popularity") {
+      return (b.popularity || 0) - (a.popularity || 0);
+    } else if (sortBy === "price-low") {
+      return Number(a.price) - Number(b.price);
+    } else if (sortBy === "price-high") {
+      return Number(b.price) - Number(a.price);
+    } else if (sortBy === "name") {
+      return a.name.localeCompare(b.name);
+    }
+    return 0;
+  });
+
+  console.log("Total performers:", performers.length);
+  console.log("Filtered performers:", filteredPerformers.length);
+  console.log("Sorted performers:", sortedPerformers.length);
 
   const getAvailabilityColor = (availability: string) => {
     switch (availability) {
-      case "Available":
+      case "Боломжтой":
         return "bg-green-600";
-      case "On Request":
+      case "Хүлээгдэж байна":
         return "bg-yellow-600";
-      case "Booked":
+      case "Захиалагдсан":
         return "bg-red-600";
       default:
         return "bg-gray-600";
@@ -57,17 +94,34 @@ export default function PerformersPage() {
   return (
     <div className="min-h-screen bg-black text-white">
       <div className="container mx-auto px-4 py-8">
-        <h1 className="text-4xl font-bold mb-8">Find Performers</h1>
+        <div className="flex justify-between items-center mb-8">
+          <h1 className="text-4xl font-bold">Уран бүтээлчид хайх</h1>
+
+          {/* Sort Dropdown */}
+          <div className="flex items-center gap-3">
+            <label className="text-sm text-gray-400">Эрэмбэлэх:</label>
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value)}
+              className="bg-gray-800 text-white px-4 py-2 rounded-lg border border-gray-700 focus:border-blue-500 focus:outline-none"
+            >
+              <option value="popularity">Алдартай байдал</option>
+              <option value="price-high">Үнэ: Өндрөөс нам</option>
+              <option value="price-low">Үнэ: Намаас өндөр</option>
+              <option value="name">Нэр</option>
+            </select>
+          </div>
+        </div>
 
         <div className="flex gap-8">
           {/* Sidebar Filters */}
           <div className="w-64 bg-gray-900 rounded-lg p-6 h-fit sticky top-8">
-            <h2 className="text-xl font-bold mb-4">Filters</h2>
+            <h2 className="text-xl font-bold mb-4">Шүүлтүүр</h2>
 
             {/* Genre Filter */}
             <div className="mb-6">
               <h3 className="font-semibold mb-3 flex items-center gap-2">
-                <span>🎵</span> Genre
+                <span>🎵</span> Төрөл
               </h3>
               <div className="space-y-2">
                 {genres.map((genre) => (
@@ -97,7 +151,7 @@ export default function PerformersPage() {
 
             {/* Availability Filter */}
             <div className="mb-6">
-              <h3 className="font-semibold mb-3">Availability</h3>
+              <h3 className="font-semibold mb-3">Боломжтой эсэх</h3>
               <div className="space-y-2">
                 {availabilityOptions.map((option) => (
                   <label
@@ -127,20 +181,62 @@ export default function PerformersPage() {
               </div>
             </div>
 
-            {/* Rating Filter */}
+            {/* Popularity Filter */}
             <div className="mb-6">
-              <h3 className="font-semibold mb-3">Rating</h3>
+              <h3 className="font-semibold mb-3">Алдартай байдал</h3>
               <input
                 type="range"
                 min="0"
-                max="5"
-                step="0.5"
-                value={minRating}
-                onChange={(e) => setMinRating(parseFloat(e.target.value))}
+                max="100000"
+                step="5000"
+                value={minPopularity}
+                onChange={(e) => setMinPopularity(parseFloat(e.target.value))}
                 className="w-full"
               />
               <div className="text-sm text-gray-400 mt-2">
-                Minimum: {minRating.toFixed(1)} ⭐
+                Хамгийн бага: {minPopularity.toLocaleString()}
+              </div>
+            </div>
+
+            {/* Price Range Filter */}
+            <div className="mb-6">
+              <h3 className="font-semibold mb-3">Үнийн хүрээ</h3>
+              <div className="space-y-3">
+                <div>
+                  <label className="text-xs text-gray-400 mb-1 block">
+                    Хамгийн бага:
+                  </label>
+                  <select
+                    value={minPrice}
+                    onChange={(e) => setMinPrice(parseInt(e.target.value))}
+                    className="w-full bg-gray-800 text-white px-3 py-2 rounded-lg border border-gray-700 focus:border-blue-500 focus:outline-none text-sm"
+                  >
+                    <option value="0">0₮</option>
+                    <option value="500000">500,000₮</option>
+                    <option value="1000000">1,000,000₮</option>
+                    <option value="1500000">1,500,000₮</option>
+                    <option value="2000000">2,000,000₮</option>
+                    <option value="3000000">3,000,000₮</option>
+                    <option value="5000000">5,000,000₮</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="text-xs text-gray-400 mb-1 block">
+                    Хамгийн их:
+                  </label>
+                  <select
+                    value={maxPrice}
+                    onChange={(e) => setMaxPrice(parseInt(e.target.value))}
+                    className="w-full bg-gray-800 text-white px-3 py-2 rounded-lg border border-gray-700 focus:border-blue-500 focus:outline-none text-sm"
+                  >
+                    <option value="1000000">1,000,000₮</option>
+                    <option value="2000000">2,000,000₮</option>
+                    <option value="3000000">3,000,000₮</option>
+                    <option value="5000000">5,000,000₮</option>
+                    <option value="10000000">10,000,000₮</option>
+                    <option value="100000000">Хязгааргүй</option>
+                  </select>
+                </div>
               </div>
             </div>
 
@@ -148,24 +244,30 @@ export default function PerformersPage() {
               onClick={() => {
                 setSelectedGenres([]);
                 setSelectedAvailability([]);
-                setMinRating(0);
+                setMinPopularity(0);
+                setMinPrice(0);
+                setMaxPrice(100000000);
+                setSortBy("popularity");
               }}
               className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg transition-colors"
             >
-              Apply Filters
+              Шүүлтүүр цэвэрлэх
             </button>
           </div>
 
           {/* Performers Grid */}
           <div className="flex-1">
+            <div className="mb-4 text-gray-400 text-sm">
+              {sortedPerformers.length} уран бүтээлч олдлоо
+            </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredPerformers.map((performer) => (
+              {sortedPerformers.map((performer) => (
                 <div
                   key={performer.id}
                   className="bg-gray-900 rounded-lg overflow-hidden hover:transform hover:scale-105 transition-transform"
                 >
                   {/* Performer Image */}
-                  <div className="relative h-64 bg-gray-800">
+                  <div className="relative h-100 bg-gray-800">
                     <img
                       src={
                         performer.image || "https://via.placeholder.com/400x300"
@@ -175,10 +277,10 @@ export default function PerformersPage() {
                     />
                     <div
                       className={`absolute top-3 left-3 ${getAvailabilityColor(
-                        performer.availability || "Available"
+                        performer.availability || "Боломжтой"
                       )} text-white px-3 py-1 rounded-full text-xs font-semibold`}
                     >
-                      {performer.availability || "Available"}
+                      {performer.availability || "Боломжтой"}
                     </div>
                   </div>
 
@@ -189,12 +291,20 @@ export default function PerformersPage() {
                       {performer.performance_type || performer.genre}
                     </p>
 
-                    {/* Rating */}
-                    <div className="flex items-center gap-2 mb-4">
-                      <FaStar className="text-yellow-400" />
-                      <span className="font-semibold">
-                        {performer.rating || "4.5"}
-                      </span>
+                    {/* Viberate Popularity & Price */}
+                    <div className="mb-4">
+                      <div className="flex items-center gap-2 mb-2">
+                        <FaStar className="text-yellow-400" />
+                        <span className="font-semibold">
+                          {performer.popularity
+                            ? Number(performer.popularity).toLocaleString()
+                            : "N/A"}
+                        </span>
+                        <span className="text-xs text-gray-400">Viberate</span>
+                      </div>
+                      <div className="text-lg font-bold text-blue-400">
+                        {Number(performer.price).toLocaleString()}₮
+                      </div>
                     </div>
 
                     {/* Action Buttons */}
@@ -205,19 +315,24 @@ export default function PerformersPage() {
                         }
                         className="flex-1 bg-gray-800 hover:bg-gray-700 text-white py-2 rounded-lg transition-colors border border-blue-600"
                       >
-                        View Profile
+                        Профайл үзэх
                       </button>
                       <button className="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg transition-colors">
-                        Book Now
+                        Захиалах
                       </button>
                     </div>
                   </div>
                 </div>
               ))}
 
-              {filteredPerformers.length === 0 && (
-                <div className="col-span-3 text-center py-12 text-gray-400">
-                  No performers found matching your filters.
+              {sortedPerformers.length === 0 && (
+                <div className="col-span-3 text-center py-12">
+                  <div className="text-gray-400 text-lg mb-2">
+                    Уучлаарай, уран бүтээлч олдсонгүй
+                  </div>
+                  <div className="text-gray-500 text-sm">
+                    Шүүлтүүрийг өөрчилж дахин оролдоно уу
+                  </div>
                 </div>
               )}
             </div>
