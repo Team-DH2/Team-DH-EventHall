@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
+import Image from "next/image";
 import { FaStar } from "react-icons/fa";
 
 export default function PerformersPage() {
@@ -12,6 +13,10 @@ export default function PerformersPage() {
 
   useEffect(() => {
     fetchPerformers();
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
+
+  useEffect(() => {
+    // fetchPerformers();
   }, []);
 
   const fetchPerformers = async () => {
@@ -55,6 +60,7 @@ export default function PerformersPage() {
   return (
     <div className="min-h-screen bg-black text-white">
       <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-4 py-8 mt-16">
         <h1 className="text-4xl font-bold mb-8">Find Performers</h1>
 
         <div className="flex gap-8">
@@ -170,6 +176,15 @@ export default function PerformersPage() {
                       }
                       alt={performer.name}
                       className="w-full h-full object-cover"
+                    <Image
+                      src={
+                        performer.image ||
+                        "https://via.placeholder.com/400x300?text=No+Image"
+                      }
+                      alt={performer.name}
+                      fill
+                      sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                      className="object-cover"
                     />
                     <div
                       className={`absolute top-3 left-3 ${getAvailabilityColor(

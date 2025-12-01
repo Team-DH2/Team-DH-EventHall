@@ -46,7 +46,7 @@ export const Header = () => {
       </div>
 
       {/* ---------------- MOBILE/TABLET HEADER ---------------- */}
-      <div className="flex lg:hidden text-white w-full h-16 items-center px-4 bg-black/50 border-b border-neutral-800">
+      <div className="fixed top-0 left-0 right-0 z-50 flex lg:hidden h-16 w-full items-center bg-black/50 px-4 text-white backdrop-blur-sm">
         {/* LEFT SIDE: Logo OR X Button */}
         {!isPhoneSearchOpen ? (
           <Logo />
@@ -64,7 +64,7 @@ export const Header = () => {
               <Search className="mr-[-36] w-5 z-10 text-neutral-500" />
               <Input
                 placeholder="Search..."
-                className="w-full pl-10 h-9 rounded-[20px] bg-neutral-900 border border-neutral-700 text-white"
+                className="w-full pl-10 h-9 rounded-[20px] bg-neutral-800 border-none text-white text-sm"
               />
             </div>
           )}
@@ -77,10 +77,22 @@ export const Header = () => {
               className="w-6 h-6 text-neutral-300 hover:text-white"
               onClick={() => setIsPhoneSearchOpen(true)}
             />
-            <button className="bg-neutral-900 rounded-md h-9 px-3 text-xs border border-neutral-700">
+            <button
+              onClick={() => {
+                setAuthView("login");
+                setIsAuthModalOpen(true);
+              }}
+              className="bg-transparent rounded-md h-9 px-3 text-xs"
+            >
               LogIn
             </button>
-            <button className="bg-blue-600 rounded-md px-3 h-9 text-xs">
+            <button
+              onClick={() => {
+                setAuthView("signup");
+                setIsAuthModalOpen(true);
+              }}
+              className="bg-blue-600 rounded-md px-3 h-9 text-xs"
+            >
               SignUp
             </button>
           </div>
@@ -89,14 +101,47 @@ export const Header = () => {
         )}
       </div>
 
-      <div className="fixed bottom-0 left-0 right-0 lg:hidden flex justify-around items-center h-16 bg-black border-t border-neutral-800 z-50">
-        <BottomNavButton text="Home" />
-        <BottomNavButton text="Event Halls" />
-        <BottomNavButton text="Performers" />
-        <BottomNavButton text="Hosts" />
-        <BottomNavButton text="Dashboard" />
-        <BottomNavButton text="Contact" />
+      {/* ---------------- MOBILE/TABLET BOTTOM NAV ---------------- */}
+      <div className="fixed bottom-0 left-0 right-0 z-50 flex h-16 items-center justify-around  bg-black/50 backdrop-blur-sm lg:hidden">
+        <BottomNavButton
+          href="/home"
+          label="Home"
+          icon={<Home className="w-5 h-5" />}
+        />
+        <BottomNavButton
+          href="/event-halls"
+          label="Halls"
+          icon={<Building className="w-5 h-5" />}
+        />
+        <BottomNavButton
+          href="/performers"
+          label="Performers"
+          icon={<Music className="w-5 h-5" />}
+        />
+        <BottomNavButton
+          href="/hosts"
+          label="Hosts"
+          icon={<Users className="w-5 h-5" />}
+        />
+        <BottomNavButton
+          href="/dashboard"
+          label="Dashboard"
+          icon={<LayoutDashboard className="w-5 h-5" />}
+        />
       </div>
+
+      <Dialog open={isAuthModalOpen} onOpenChange={setIsAuthModalOpen}>
+        <DialogOverlay className="fixed inset-0 bg-black/40 backdrop-blur-[2px]">
+          <DialogContent className="p-0 border-none bg-transparent w-100 rounded-3xl shadow-none max-w-md data-[state=open]:bg-neutral-900/50 data-[state=open]:backdrop-blur-xs [&>button]:hidden">
+            <DialogHeader className="sr-only">
+              <DialogTitle>
+                {authView === "login" ? "Log In" : "Sign Up"}
+              </DialogTitle>
+            </DialogHeader>
+            <AuthForm view={authView} onViewChange={setAuthView} />
+          </DialogContent>
+        </DialogOverlay>
+      </Dialog>
     </>
   );
 };

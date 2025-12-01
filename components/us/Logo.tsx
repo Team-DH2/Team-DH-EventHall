@@ -2,7 +2,7 @@ import React from "react";
 
 export const Logo = () => {
   return (
-    <div className="flex items-center ml-0 lg:ml-10">
+    <div className="flex items-center ml-0">
       <div className="bg-blue-600 w-10 h-10 flex items-center justify-center mr-2 rounded-md">
         <svg
           xmlns="http://www.w3.org/2000/svg"

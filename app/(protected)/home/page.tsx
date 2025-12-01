@@ -3,6 +3,7 @@
 import { Footer } from "@/components/us/Footer";
 import { CarouselMy } from "@/components/us/CarouselMy";
 import { Hero } from "@/components/us/Hero";
+import { WhyChooseUs } from "@/components/us/WhyChooseUs";
 
 interface Hall {
   id: number;
@@ -21,7 +22,7 @@ export default function Page() {
       overview:
         "Elegant ballroom with stunning chandeliers and spacious dance floor.",
       backdrop_path:
-        "https://wallpapers.com/images/hd/beautiful-nature-and-a-path-c6vstan9nvd7so4m.jpg", // Replace with your image path
+        "https://fourcolumns.com/wp-content/uploads/2023/07/Featured-image-6.jpg", // Replace with your image path
       vote_average: 4.8,
     },
     {
@@ -37,7 +38,7 @@ export default function Page() {
       title: "Crystal Palace",
       overview: "Luxurious wedding venue with crystal decor and garden views.",
       backdrop_path:
-        "https://media.istockphoto.com/id/1156310672/photo/vertical-empty-park-path-landscape-background.jpg?s=612x612&w=0&k=20&c=85t-oBY8Ejdb_Ny_fKAaC3ehXwSbHEUxFT7_suwm4EU=", // Replace with your image path
+        "https://www.hamaraevent.com/uploads/blog/0098447001471609271.jpg", // Replace with your image path
       vote_average: 4.7,
     },
     {
@@ -45,7 +46,7 @@ export default function Page() {
       title: "Garden Court",
       overview: "Charming outdoor venue perfect for intimate celebrations.",
       backdrop_path:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR7xZiAGJYmf5GRiihHxpcD3WeTHVSpfpF7fxto_kEcWAX-40KRiDo3OvY9b_3JW8shuBw&usqp=CAU", // Replace with your image path
+        "https://camelotbanquets.com/wp-content/uploads/2020/01/0901-%C2%A9-KATANA-PHOTO.jpg", // Replace with your image path
       vote_average: 4.6,
     },
     {
@@ -59,10 +60,11 @@ export default function Page() {
   ];
 
   return (
-    <>
-      {/* <CarouselMy halls={halls} /> */}
+    <main className="h-screen overflow-y-scroll snap-y snap-mandatory">
+      <CarouselMy halls={halls} />
       <Hero />
+      <WhyChooseUs />
       <Footer />
-    </>
+    </main>
   );
 }

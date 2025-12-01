@@ -17,6 +17,23 @@ model User {
   booking   booking[]
 }
 
+model booking {
+  id           Int           @id @default(autoincrement())
+  userid       Int
+  hallid       Int?
+  performersid Int?
+  hostid       Int?
+  ordereddate  DateTime?     @db.Date
+  date         DateTime      @db.Timestamp(6)
+  starttime    String?
+  endtime      String?
+  status       bookingstatus
+  event_halls  event_halls?  @relation(fields: [hallid], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  hosts        hosts?        @relation(fields: [hostid], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  performers   performers?   @relation(fields: [performersid], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  User         User          @relation(fields: [userid], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
 model event_halls {
   id                      Int       @id @default(autoincrement())
   name                    String    @db.VarChar(255)
@@ -55,24 +72,8 @@ model performers {
   availability     String?   @db.VarChar(50)
   image            String?
   rating           Float?
+  price            Decimal   @default(500000) @db.Decimal(12, 0)
   booking          booking[]
-}
-
-model booking {
-  id           Int           @id @default(autoincrement())
-  userid       Int
-  hallid       Int?
-  performersid Int?
-  hostid       Int?
-  ordereddate  DateTime?     @db.Date
-  date         DateTime      @db.Timestamp(6)
-  starttime    String?
-  endtime      String?
-  status       bookingstatus
-  event_halls  event_halls?  @relation(fields: [hallid], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  hosts        hosts?        @relation(fields: [hostid], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  performers   performers?   @relation(fields: [performersid], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  User         User          @relation(fields: [userid], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
 
 enum bookingstatus {
