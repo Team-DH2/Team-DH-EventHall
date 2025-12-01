@@ -81,7 +81,10 @@ const CarouselCard = ({ el }: { el: HallType }) => {
       <Card className="w-full h-full p-0 border-0 ml-[16] shadow-none rounded-none  relative">
         {/* Image */}
         <Image
-          src={el.backdrop_path}
+          src={
+            el.backdrop_path ||
+            "https://img.freepik.com/premium-vector/image-icon-design-vector-template_1309674-943.jpg"
+          }
           alt={el.title}
           fill={true}
           priority
@@ -133,7 +136,7 @@ const CarouselCard = ({ el }: { el: HallType }) => {
             style={{ animationDelay: "200ms" }}
             className="mb-1 font-medium text-[14px] [text-shadow:0_1px_3px_rgb(0_0_0/0.5)]"
           >
-            Now Playing:
+            Event Hall:
           </p>
           <h1 className="font-bold text-2xl mb-1 [text-shadow:0_2px_4px_rgb(0_0_0/0.5)]">
             {el.title}

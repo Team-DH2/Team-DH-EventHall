@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import { ButtonOfNav } from "./ButtonOfNav";
 import { Input } from "../ui/input";
 import {
@@ -13,12 +13,15 @@ import {
 } from "lucide-react";
 import { Logo } from "./Logo";
 import { BottomNavButton } from "./BottomNavButton";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { AuthForm } from "./AuthForm";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
+import { DialogOverlay } from "@radix-ui/react-dialog";
 
 export const Header = () => {
-  const [isPhoneSearchOpen, setIsPhoneSearchOpen] = React.useState(false);
-  const router = useRouter();
+  const [isPhoneSearchOpen, setIsPhoneSearchOpen] = useState(false);
+  const [authView, setAuthView] = useState<"login" | "signup">("login");
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+
   return (
     <>
       {/* ---------------- DESKTOP HEADER ---------------- */}
@@ -30,18 +33,12 @@ export const Header = () => {
 
         {/* Centered Navigation */}
         <div className="flex items-center gap-4 font-bold">
-          <Link href="/home">
-            <ButtonOfNav text="Home" />
-          </Link>
-
-          <Link href="/eventhalls">
-            <ButtonOfNav text="Event Halls" />
-          </Link>
-
-          <ButtonOfNav text="Performers" />
-          <ButtonOfNav text="Hosts" />
-          <ButtonOfNav text="Dashboard" />
-          <ButtonOfNav text="Contact" />
+          <ButtonOfNav href="/home" text="Home" />
+          <ButtonOfNav href="/event-halls" text="Event Halls" />
+          <ButtonOfNav href="/performers" text="Performers" />
+          <ButtonOfNav href="/hosts" text="Hosts" />
+          <ButtonOfNav href="/dashboard" text="Dashboard" />
+          <ButtonOfNav href="/contact" text="Contact" />
         </div>
 
         {/* Right Side */}
@@ -54,10 +51,22 @@ export const Header = () => {
             />
           </div>
           <div className="flex items-center gap-2">
-            <button className="bg-transparent rounded-md h-10 px-4 text-sm">
+            <button
+              onClick={() => {
+                setAuthView("login");
+                setIsAuthModalOpen(true);
+              }}
+              className="bg-transparent rounded-md h-10 px-4 text-sm"
+            >
               LogIn
             </button>
-            <button className="bg-blue-600 rounded-md px-4 h-10 text-sm">
+            <button
+              onClick={() => {
+                setAuthView("signup");
+                setIsAuthModalOpen(true);
+              }}
+              className="bg-blue-600 rounded-md px-4 h-10 text-sm"
+            >
               SignUp
             </button>
           </div>
@@ -65,7 +74,7 @@ export const Header = () => {
       </div>
 
       {/* ---------------- MOBILE/TABLET HEADER ---------------- */}
-      <div className="flex lg:hidden text-white w-full h-16 items-center px-4 bg-black/50 ">
+      <div className="fixed top-0 left-0 right-0 z-50 flex lg:hidden h-16 w-full items-center bg-black/50 px-4 text-white backdrop-blur-sm">
         {/* LEFT SIDE: Logo OR X Button */}
         {!isPhoneSearchOpen ? (
           <Logo />
@@ -96,10 +105,22 @@ export const Header = () => {
               className="w-6 h-6 text-neutral-300 hover:text-white"
               onClick={() => setIsPhoneSearchOpen(true)}
             />
-            <button className="bg-transparent rounded-md h-9 px-3 text-xs">
+            <button
+              onClick={() => {
+                setAuthView("login");
+                setIsAuthModalOpen(true);
+              }}
+              className="bg-transparent rounded-md h-9 px-3 text-xs"
+            >
               LogIn
             </button>
-            <button className="bg-blue-600 rounded-md px-3 h-9 text-xs">
+            <button
+              onClick={() => {
+                setAuthView("signup");
+                setIsAuthModalOpen(true);
+              }}
+              className="bg-blue-600 rounded-md px-3 h-9 text-xs"
+            >
               SignUp
             </button>
           </div>
@@ -109,9 +130,9 @@ export const Header = () => {
       </div>
 
       {/* ---------------- MOBILE/TABLET BOTTOM NAV ---------------- */}
-      <div className="fixed bottom-0 left-0 right-0 lg:hidden flex justify-around items-center h-16 bg-black/50 border-t border-neutral-800 z-50">
+      <div className="fixed bottom-0 left-0 right-0 z-50 flex h-16 items-center justify-around  bg-black/50 backdrop-blur-sm lg:hidden">
         <BottomNavButton
-          href="/"
+          href="/home"
           label="Home"
           icon={<Home className="w-5 h-5" />}
         />
@@ -136,6 +157,19 @@ export const Header = () => {
           icon={<LayoutDashboard className="w-5 h-5" />}
         />
       </div>
+
+      <Dialog open={isAuthModalOpen} onOpenChange={setIsAuthModalOpen}>
+        <DialogOverlay className="fixed inset-0 bg-black/40 backdrop-blur-[2px]">
+          <DialogContent className="p-0 border-none bg-transparent w-100 rounded-3xl shadow-none max-w-md data-[state=open]:bg-neutral-900/50 data-[state=open]:backdrop-blur-xs [&>button]:hidden">
+            <DialogHeader className="sr-only">
+              <DialogTitle>
+                {authView === "login" ? "Log In" : "Sign Up"}
+              </DialogTitle>
+            </DialogHeader>
+            <AuthForm view={authView} onViewChange={setAuthView} />
+          </DialogContent>
+        </DialogOverlay>
+      </Dialog>
     </>
   );
 };
