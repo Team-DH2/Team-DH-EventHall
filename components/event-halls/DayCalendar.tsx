@@ -93,12 +93,10 @@ export default function BookingCalendar({
   };
 
   const TimeBox = ({
-    label,
     type,
     day,
     disabled = false,
   }: {
-    label: string;
     type: "am" | "pm" | "udur";
     day: number;
     disabled?: boolean;
@@ -107,6 +105,15 @@ export default function BookingCalendar({
       2,
       "0"
     )}-${String(day).padStart(2, "0")}`;
+
+    // type → label автоматаар хувиргах
+    const labelMap: Record<string, string> = {
+      am: "08:00 - 12:00",
+      pm: "18:00 - 22:00",
+      udur: "09:00 - 18:00",
+    };
+
+    const label = labelMap[type];
 
     let isAvailable = true;
 
@@ -129,7 +136,7 @@ export default function BookingCalendar({
     const isSelected = selected.date === dateStr && selected.type === type;
 
     return !isAvailable ? (
-      <div className="text-red-700 w-full rounded-xl border p-3 text-center text-sm font-medium transition-all">
+      <div className="text-red-700 w-full rounded-xl border p-3 text-center text-sm font-medium">
         Захиалгатай
       </div>
     ) : (
@@ -137,18 +144,13 @@ export default function BookingCalendar({
         onClick={() => handleSelect(day, type)}
         disabled={!isAvailable}
         className={`
-          w-full rounded-xl border p-3 text-center text-sm font-medium transition-all
-          ${
-            isSelected
-              ? "bg-blue-600 text-white shadow-md scale-[1.02]"
-              : "bg-white hover:bg-blue-50"
-          }
-          ${
-            !isAvailable
-              ? "opacity-50 cursor-not-allowed border-red-400 text-red-700"
-              : "border-gray-300 hover:border-blue-400"
-          }
-        `}
+        w-full rounded-xl border p-3 text-center text-sm font-medium transition-all
+        ${
+          isSelected
+            ? "bg-blue-600 text-white shadow-md scale-[1.02]"
+            : "bg-white hover:bg-blue-50"
+        }
+      `}
       >
         {label}
       </button>
@@ -219,6 +221,21 @@ export default function BookingCalendar({
                     parseInt(b.starttime.split(":")[0], 10) === 9
                 );
 
+                const dayBookings = bookings.filter(
+                  (b) =>
+                    new Date(b.date).toISOString().split("T")[0] === dateStr
+                );
+
+                // AM эсвэл PM захиалагдсан эсэхийг шалгах
+                const isAmBooked = dayBookings.some(
+                  (b) => parseInt(b.starttime.split(":")[0], 10) === 8
+                );
+                const isPmBooked = dayBookings.some(
+                  (b) => parseInt(b.starttime.split(":")[0], 10) === 18
+                );
+
+                const isPartialBooked = isAmBooked || isPmBooked;
+
                 return (
                   <div
                     key={j}
@@ -234,23 +251,12 @@ export default function BookingCalendar({
                       {day}
                     </div>
 
+                    <TimeBox type="am" day={day} disabled={isDayBooked} />
+                    <TimeBox type="pm" day={day} disabled={isDayBooked} />
                     <TimeBox
-                      label="Үдээс өмнө"
-                      type="am"
-                      day={day}
-                      disabled={isDayBooked}
-                    />
-                    <TimeBox
-                      label="Үдээс хойш"
-                      type="pm"
-                      day={day}
-                      disabled={isDayBooked}
-                    />
-                    <TimeBox
-                      label="Өдөрөөр нь"
                       type="udur"
                       day={day}
-                      disabled={isDayBooked}
+                      disabled={isDayBooked || isPartialBooked}
                     />
                   </div>
                 );

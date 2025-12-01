@@ -1,11 +1,13 @@
 "use client";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { ButtonOfNav } from "./ButtonOfNav";
 import { Input } from "../ui/input";
 import { Search, X } from "lucide-react";
 
 import { BottomNavButton } from "./BottomNavButton";
 import { Logo } from "./Logo";
+
+import SearchFunction from "./Search";
 
 export const Header = () => {
   const [isPhoneSearchOpen, setIsPhoneSearchOpen] = React.useState(false);
@@ -30,13 +32,7 @@ export const Header = () => {
         </div>
 
         <div className="flex mr-10 items-center justify-between w-full lg:w-auto gap-3">
-          <div className="flex items-center">
-            <Search className="mr-[-36] w-5 z-10 text-neutral-500" />
-            <Input
-              placeholder="Search..."
-              className="pl-10 h-10 rounded-[20px] bg-neutral-800 border-none"
-            />
-          </div>
+          <SearchFunction />
 
           <div className="flex gap-2">
             <button className="bg-black rounded-md h-10 px-4 text-sm">
@@ -93,8 +89,6 @@ export const Header = () => {
         )}
       </div>
 
-      {/* ---------------- MOBILE/TABLET BOTTOM NAV ---------------- */}
-      {/* ---------------- MOBILE/TABLET BOTTOM NAV ---------------- */}
       <div className="fixed bottom-0 left-0 right-0 lg:hidden flex justify-around items-center h-16 bg-black border-t border-neutral-800 z-50">
         <BottomNavButton text="Home" />
         <BottomNavButton text="Event Halls" />

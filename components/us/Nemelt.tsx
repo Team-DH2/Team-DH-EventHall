@@ -1,6 +1,5 @@
 "use client";
 import React, { useState } from "react";
-import "./slider.css";
 
 const LOCATIONS = [
   "Баянгол",
@@ -32,7 +31,6 @@ export default function FilterSidebar() {
 
   return (
     <aside className="w-[540px] h-[600px] bg-[#1F2024] text-gray-200 rounded-2xl p-6 shadow-lg border border-[#2f2f36] relative">
-
       <h2 className="text-2xl font-semibold mb-6">Filter Event Halls</h2>
 
       {/* LOCATION */}
@@ -44,9 +42,7 @@ export default function FilterSidebar() {
           onClick={() => setOpenLoc(!openLoc)}
           className="w-full bg-[#2A2B2F] px-3 py-3 rounded-xl flex justify-between items-center text-left"
         >
-          <span className="text-gray-300">
-            {location || "Сум/дүүрэг…"}
-          </span>
+          <span className="text-gray-300">{location || "Сум/дүүрэг…"}</span>
 
           <svg
             className={`w-4 h-4 text-gray-400 transition-transform ${
@@ -114,11 +110,21 @@ export default function FilterSidebar() {
         <div className="mb-2 text-gray-300">Capacity</div>
 
         <div className="flex items-center gap-3 bg-[#2A2B2F] px-3 py-3 rounded-xl">
-          <svg className="w-5 h-5 text-gray-400" viewBox="0 0 24 24" fill="none">
-            <path stroke="currentColor" strokeWidth="1.5"
-              d="M12 12c2.2 0 4-1.8 4-4s-1.8-4-4-4-4 1.8-4 4 1.8 4 4 4z" />
-            <path stroke="currentColor" strokeWidth="1.5"
-              d="M6 20v-1a4 4 0 014-4h4a4 4 0 014 4v1" />
+          <svg
+            className="w-5 h-5 text-gray-400"
+            viewBox="0 0 24 24"
+            fill="none"
+          >
+            <path
+              stroke="currentColor"
+              strokeWidth="1.5"
+              d="M12 12c2.2 0 4-1.8 4-4s-1.8-4-4-4-4 1.8-4 4 1.8 4 4 4z"
+            />
+            <path
+              stroke="currentColor"
+              strokeWidth="1.5"
+              d="M6 20v-1a4 4 0 014-4h4a4 4 0 014 4v1"
+            />
           </svg>
 
           <input
