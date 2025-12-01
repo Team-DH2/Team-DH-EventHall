@@ -10,6 +10,9 @@ export default function PerformersPage() {
     []
   );
   const [minRating, setMinRating] = useState<number>(0);
+
+  useEffect(() => {
+    fetchPerformers();
   const [isFilterOpen, setIsFilterOpen] = useState(false);
 
   useEffect(() => {
@@ -56,6 +59,7 @@ export default function PerformersPage() {
 
   return (
     <div className="min-h-screen bg-black text-white">
+      <div className="container mx-auto px-4 py-8">
       <div className="container mx-auto px-4 py-8 mt-16">
         <h1 className="text-4xl font-bold mb-8">Find Performers</h1>
 
@@ -166,6 +170,12 @@ export default function PerformersPage() {
                 >
                   {/* Performer Image */}
                   <div className="relative h-64 bg-gray-800">
+                    <img
+                      src={
+                        performer.image || "https://via.placeholder.com/400x300"
+                      }
+                      alt={performer.name}
+                      className="w-full h-full object-cover"
                     <Image
                       src={
                         performer.image ||

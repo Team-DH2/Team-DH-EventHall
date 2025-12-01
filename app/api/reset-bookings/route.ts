@@ -1,26 +1,31 @@
-import { prisma } from "@/lib/prisma";
-import { NextResponse } from "next/server";
+import prisma from "@/lib/prisma";
+import { NextRequest, NextResponse } from "next/server";
 
-export async function POST() {
+export async function POST(req: NextRequest) {
   try {
-    // Delete all bookings
-    const deletedBookings = await prisma.bookings.deleteMany({});
+    const body = await req.json();
+    const { id } = body;
 
-    // Set all time slots to available
-    const updatedSlots = await prisma.time_slots.updateMany({
-      where: { is_available: false },
-      data: { is_available: true },
+    if (!id) {
+      return NextResponse.json(
+        { error: "Booking ID is required" },
+        { status: 400 }
+      );
+    }
+
+    // Delete booking by id
+    const deletedBooking = await prisma.booking.delete({
+      where: { id: Number(id) }, // id-ийн type Number бол Number(id), String бол 그대로
     });
 
     return NextResponse.json({
-      message: "All bookings reset successfully",
-      deletedBookings: deletedBookings.count,
-      availableSlots: updatedSlots.count,
+      message: `Booking with ID ${id} deleted successfully`,
+      booking: deletedBooking,
     });
   } catch (error) {
-    console.error("Error resetting bookings:", error);
+    console.error("Error deleting booking:", error);
     return NextResponse.json(
-      { error: "Failed to reset bookings" },
+      { error: "Failed to delete booking" },
       { status: 500 }
     );
   }

@@ -1,72 +1,44 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ButtonOfNav } from "./ButtonOfNav";
 import { Input } from "../ui/input";
-import {
-  Search,
-  X,
-  Home,
-  Building,
-  Music,
-  Users,
-  LayoutDashboard,
-} from "lucide-react";
-import { Logo } from "./Logo";
+import { Search, X } from "lucide-react";
+
 import { BottomNavButton } from "./BottomNavButton";
-import { AuthForm } from "./AuthForm";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
-import { DialogOverlay } from "@radix-ui/react-dialog";
+import { Logo } from "./Logo";
+
+import SearchFunction from "./Search";
 
 export const Header = () => {
-  const [isPhoneSearchOpen, setIsPhoneSearchOpen] = useState(false);
-  const [authView, setAuthView] = useState<"login" | "signup">("login");
-  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [isPhoneSearchOpen, setIsPhoneSearchOpen] = React.useState(false);
 
   return (
     <>
       {/* ---------------- DESKTOP HEADER ---------------- */}
-      <div className="hidden lg:flex text-white w-full h-20 items-center justify-between bg-black/50 backdrop-blur-sm px-10">
-        {/* Left Side */}
-        <div className="flex-1 flex justify-start">
-          <Logo />
-        </div>
+      <div className="hidden lg:flex text-white w-full h-20 items-center justify-between bg-black/50 backdrop-blur-sm">
+        <Logo />
 
-        {/* Centered Navigation */}
-        <div className="flex items-center gap-4 font-bold">
-          <ButtonOfNav href="/home" text="Home" />
-          <ButtonOfNav href="/event-halls" text="Event Halls" />
-          <ButtonOfNav href="/performers" text="Performers" />
-          <ButtonOfNav href="/hosts" text="Hosts" />
-          <ButtonOfNav href="/dashboard" text="Dashboard" />
-          <ButtonOfNav href="/contact" text="Contact" />
-        </div>
-
-        {/* Right Side */}
-        <div className="flex-1 flex justify-end items-center gap-3">
-          <div className="flex items-center w-full max-w-[220px]">
-            <Search className="mr-[-36] w-5 z-10 text-neutral-500" />
-            <Input
-              placeholder="Search..."
-              className="pl-10 h-10 rounded-[20px] bg-neutral-800 border-none w-full text-sm"
-            />
+        <div className="hidden font-bold w-200 justify-between lg:flex items-center">
+          <div className="ml-5">
+            <ButtonOfNav text="Home" />
           </div>
-          <div className="flex items-center gap-2">
-            <button
-              onClick={() => {
-                setAuthView("login");
-                setIsAuthModalOpen(true);
-              }}
-              className="bg-transparent rounded-md h-10 px-4 text-sm"
-            >
+          <ButtonOfNav text="Event Halls" />
+          <ButtonOfNav text="Performers" />
+          <ButtonOfNav text="Hosts" />
+          <ButtonOfNav text="Dashboard" />
+          <div className="mr-5">
+            <ButtonOfNav text="Contact" />
+          </div>
+        </div>
+
+        <div className="flex mr-10 items-center justify-between w-full lg:w-auto gap-3">
+          <SearchFunction />
+
+          <div className="flex gap-2">
+            <button className="bg-black rounded-md h-10 px-4 text-sm">
               LogIn
             </button>
-            <button
-              onClick={() => {
-                setAuthView("signup");
-                setIsAuthModalOpen(true);
-              }}
-              className="bg-blue-600 rounded-md px-4 h-10 text-sm"
-            >
+            <button className="bg-blue-600 rounded-md px-4 h-10 text-sm">
               SignUp
             </button>
           </div>
