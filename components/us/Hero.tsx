@@ -92,12 +92,15 @@ export const Hero = () => {
           {featuredHalls.map((hall, index) => (
             <div
               key={hall.id}
-              className="bg-neutral-900 rounded-lg overflow-hidden transform hover:-translate-y-2 transition-transform duration-300 animate-fade-in-up"
+              className="bg-neutral-900 rounded-lg overflow-hidden transform hover:shadow-xl hover:scale-[1.02] transition-transform duration-200"
               style={{ animationDelay: `${600 + index * 100}ms` }}
             >
               <div className="relative h-48 w-full">
                 <Image
-                  src={hall.imageUrl}
+                  src={
+                    hall.imageUrl ||
+                    "https://via.placeholder.com/400x300?text=No+Image"
+                  }
                   alt={hall.title}
                   fill={true}
                   sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
