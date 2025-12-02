@@ -1,17 +1,46 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { FaStar, FaEnvelope, FaPhone, FaArrowLeft } from "react-icons/fa";
+import {
+  FaStar,
+  FaEnvelope,
+  FaPhone,
+  FaArrowLeft,
+  FaPlay,
+  FaPause,
+  FaVolumeUp,
+} from "react-icons/fa";
+
+// Declare YouTube API types
+declare global {
+  interface Window {
+    YT: any;
+    onYouTubeIframeAPIReady: () => void;
+  }
+}
 
 export default function PerformerDetailPage() {
   const params = useParams();
   const router = useRouter();
   const [performer, setPerformer] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [volume, setVolume] = useState(30);
+  const playerRef = useRef<any>(null);
 
   useEffect(() => {
     fetchPerformer();
   }, [params.id]);
+
+  useEffect(() => {
+    // Load YouTube IFrame API
+    if (!window.YT) {
+      const tag = document.createElement("script");
+      tag.src = "https://www.youtube.com/iframe_api";
+      const firstScriptTag = document.getElementsByTagName("script")[0];
+      firstScriptTag.parentNode?.insertBefore(tag, firstScriptTag);
+    }
+  }, []);
 
   const fetchPerformer = async () => {
     try {
@@ -23,6 +52,73 @@ export default function PerformerDetailPage() {
       console.error("Error fetching performer:", error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  // Extract YouTube video ID from URL
+  const getYouTubeVideoId = (url: string) => {
+    const regExp =
+      /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+    const match = url.match(regExp);
+    return match && match[2].length === 11 ? match[2] : null;
+  };
+
+  useEffect(() => {
+    if (performer?.music_url) {
+      const videoId = getYouTubeVideoId(performer.music_url);
+
+      if (videoId && window.YT && window.YT.Player) {
+        // Initialize YouTube player
+        playerRef.current = new window.YT.Player("youtube-player", {
+          height: "0",
+          width: "0",
+          videoId: videoId,
+          playerVars: {
+            autoplay: 1,
+            controls: 0,
+            loop: 1,
+            playlist: videoId,
+          },
+          events: {
+            onReady: (event: any) => {
+              event.target.setVolume(volume);
+              event.target.playVideo();
+              setIsPlaying(true);
+            },
+            onStateChange: (event: any) => {
+              if (event.data === window.YT.PlayerState.PLAYING) {
+                setIsPlaying(true);
+              } else if (event.data === window.YT.PlayerState.PAUSED) {
+                setIsPlaying(false);
+              }
+            },
+          },
+        });
+      }
+    }
+
+    return () => {
+      if (playerRef.current && playerRef.current.destroy) {
+        playerRef.current.destroy();
+      }
+    };
+  }, [performer]);
+
+  const togglePlay = () => {
+    if (playerRef.current) {
+      if (isPlaying) {
+        playerRef.current.pauseVideo();
+      } else {
+        playerRef.current.playVideo();
+      }
+    }
+  };
+
+  const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newVolume = parseInt(e.target.value);
+    setVolume(newVolume);
+    if (playerRef.current && playerRef.current.setVolume) {
+      playerRef.current.setVolume(newVolume);
     }
   };
 
@@ -65,6 +161,36 @@ export default function PerformerDetailPage() {
 
   return (
     <div className="min-h-screen bg-black text-white">
+      {/* Hidden YouTube Player */}
+      {performer.music_url && <div id="youtube-player"></div>}
+
+      {/* Music Control - Floating Button */}
+      {performer.music_url && (
+        <div className="fixed bottom-8 right-8 z-50 flex flex-col gap-3">
+          <button
+            onClick={togglePlay}
+            className="bg-blue-600 hover:bg-blue-700 text-white p-4 rounded-full shadow-lg transition-all transform hover:scale-110"
+            title={isPlaying ? "Зогсоох" : "Тоглуулах"}
+          >
+            {isPlaying ? <FaPause size={20} /> : <FaPlay size={20} />}
+          </button>
+
+          {/* Volume Control */}
+          <div className="bg-gray-900 p-3 rounded-lg shadow-lg flex items-center gap-2">
+            <FaVolumeUp className="text-blue-400" />
+            <input
+              type="range"
+              min="0"
+              max="100"
+              step="10"
+              value={volume}
+              onChange={handleVolumeChange}
+              className="w-24 accent-blue-600"
+            />
+          </div>
+        </div>
+      )}
+
       <div className="container mx-auto px-4 py-8">
         {/* Back Button */}
         <button
@@ -123,17 +249,43 @@ export default function PerformerDetailPage() {
             <div className="bg-gray-900 rounded-lg p-8">
               {/* About Section */}
               <section className="mb-8">
-                <h2 className="text-2xl font-bold mb-4">Танилцуулга</h2>
+                <h2 className="text-2xl text-blue-400 font-bold mb-4">
+                  Танилцуулга
+                </h2>
                 <p className="text-gray-300 leading-relaxed">
                   {performer.bio ||
                     "Энэ уран бүтээлчийн талаар мэдээлэл байхгүй байна."}
                 </p>
               </section>
 
+              {/* Best Songs Section */}
+              {performer.best_songs && performer.best_songs.length > 0 && (
+                <section className="mb-8">
+                  <h2 className="text-2xl text-blue-400 font-bold mb-4">
+                    Шилдэг дуунууд
+                  </h2>
+                  <div className="space-y-3">
+                    {performer.best_songs.map((song: string, index: number) => (
+                      <div
+                        key={index}
+                        className="bg-gray-800 p-4 rounded-lg hover:bg-gray-750 transition-colors"
+                      >
+                        <div className="flex items-center gap-3">
+                          <FaStar className="text-yellow-400" />
+                          <h3 className="text-lg font-semibold">{song}</h3>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </section>
+              )}
+
               {/* Genre Section */}
               {performer.genre && (
                 <section className="mb-8">
-                  <h2 className="text-2xl font-bold mb-4">Төрөл</h2>
+                  <h2 className="text-2xl text-blue-400 font-bold mb-4">
+                    Төрөл
+                  </h2>
                   <div className="flex flex-wrap gap-2">
                     {performer.genre
                       .split(",")
@@ -152,14 +304,16 @@ export default function PerformerDetailPage() {
               {/* Performance Type */}
               {performer.performance_type && (
                 <section className="mb-8">
-                  <h2 className="text-2xl font-bold mb-4">Тоглолтын төрөл</h2>
+                  <h2 className="text-2xl text-blue-400 font-bold mb-4">
+                    Тоглолтын төрөл
+                  </h2>
                   <p className="text-gray-300">{performer.performance_type}</p>
                 </section>
               )}
 
               {/* Contact Information */}
               <section className="mb-8">
-                <h2 className="text-2xl font-bold mb-4">
+                <h2 className="text-2xl text-blue-400 font-bold mb-4">
                   Холбоо барих мэдээлэл
                 </h2>
                 <div className="space-y-4">
@@ -190,13 +344,19 @@ export default function PerformerDetailPage() {
 
               {/* Additional Details */}
               <section>
-                <h2 className="text-2xl font-bold mb-4">Дэлгэрэнгүй</h2>
+                <h2 className="text-2xl text-blue-400 font-bold mb-4">
+                  Дэлгэрэнгүй
+                </h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="bg-gray-800 p-4 rounded-lg">
-                    <h3 className="text-gray-400 text-sm mb-1">
+                  <div
+                    className={`p-4 rounded-lg ${getAvailabilityColor(
+                      performer.availability
+                    )}`}
+                  >
+                    <h3 className="text-blue-600 text-sm mb-1">
                       Боломжтой эсэх
                     </h3>
-                    <p className="font-semibold">
+                    <p className="font-semibold ">
                       {performer.availability || "Боломжтой"}
                     </p>
                   </div>

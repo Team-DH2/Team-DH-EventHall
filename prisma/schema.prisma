@@ -75,6 +75,8 @@ model performers {
   image            String?
   price            Decimal   @default(500000) @db.Decimal(12, 0)
   popularity       Int?
+  best_songs       String[]
+  music_url        String?   @db.VarChar(500)
   booking          booking[]
 }
 
