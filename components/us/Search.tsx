@@ -75,11 +75,13 @@ export default function SearchFunction() {
         >
           {loading && <p className="mt-3 text-gray-400">Хайж байна...</p>}
           {results && (
-            <div className="mt-4 space-y-6 h-fit max-h-200 overflow-scroll">
+            <div className="mt-4 space-y-6 h-fit max-h-200 overflow-scroll text-black">
               {/* Event Halls */}
               {results?.halls?.length > 0 && (
                 <div>
-                  <h2 className="text-xl font-bold mb-2">🏛 Event Halls</h2>
+                  <h2 className="text-xl font-bold mb-2 text-black">
+                    🏛 Event Halls
+                  </h2>
                   <div className="space-y-2">
                     {results.halls.map((hall: any) => (
                       <div

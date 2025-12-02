@@ -16,6 +16,7 @@ import { BottomNavButton } from "./BottomNavButton";
 import { AuthForm } from "./AuthForm";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
 import { DialogOverlay } from "@radix-ui/react-dialog";
+import SearchFunction from "./Search";
 
 export const Header = () => {
   const [isPhoneSearchOpen, setIsPhoneSearchOpen] = useState(false);
@@ -44,11 +45,8 @@ export const Header = () => {
         {/* Right Side */}
         <div className="flex-1 flex justify-end items-center gap-3">
           <div className="flex items-center w-full max-w-[220px]">
-            <Search className="mr-[-36] w-5 z-10 text-neutral-500" />
-            <Input
-              placeholder="Search..."
-              className="pl-10 h-10 rounded-[20px] bg-neutral-800 border-none w-full text-sm"
-            />
+            {/* <Search className="mr-[-36] w-5 z-10 text-neutral-500" /> */}
+            <SearchFunction></SearchFunction>
           </div>
           <div className="flex items-center gap-2">
             <button
