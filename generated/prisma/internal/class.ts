@@ -104,6 +104,7 @@ export interface PrismaClient<
   in out OmitOpts extends Prisma.PrismaClientOptions["omit"] = undefined,
   in out ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs
 > {
+  User: any;
   eventHalls: any;
   event_halls: any;
   [K: symbol]: { types: Prisma.TypeMap<ExtArgs>["other"] };
