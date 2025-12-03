@@ -36,6 +36,7 @@ export default function PerformerDetailPage() {
     // Load YouTube IFrame API
     if (!window.YT) {
       const tag = document.createElement("script");
+      console.log("Loading YouTube IFrame API script");
       tag.src = "https://www.youtube.com/iframe_api";
       const firstScriptTag = document.getElementsByTagName("script")[0];
       firstScriptTag.parentNode?.insertBefore(tag, firstScriptTag);
