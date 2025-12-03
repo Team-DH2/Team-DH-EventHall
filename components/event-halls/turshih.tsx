@@ -3,9 +3,11 @@ import React, { useEffect, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { CalendarDays, Clock, MapPin } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 export default function Dashboard() {
   const [bookings, setBookings] = useState([]);
+  const router = useRouter();
 
   useEffect(() => {
     fetch("/api/bookings")
@@ -67,6 +69,9 @@ export default function Dashboard() {
       {/* Upcoming Events */}
       <div className="flex">
         <div>
+          {bookings.map((b: any) => (
+            <div>{b.hosts.name}</div>
+          ))}
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
             {bookings.map((b: any) => (
               <div
@@ -129,6 +134,11 @@ export default function Dashboard() {
                 </div>
               </div>
             ))}
+            <div>
+              <Button onClick={() => router.push("/performer")}>
+                Performer Zahialah
+              </Button>
+            </div>
           </div>
 
           {/* Booking Requests */}
@@ -158,7 +168,7 @@ export default function Dashboard() {
           {/* Right Side Panel (Calendar + Recent Activities) */}
           <div className="flex flex-col gap-10">
             {/* Calendar */}
-            <Card className="bg-[#1a1d29] border border-[#2a2e3d] rounded-2xl p-5">
+            {/* <Card className="bg-[#1a1d29] border border-[#2a2e3d] rounded-2xl p-5">
               <h2 className="text-lg font-semibold mb-3">November 2025</h2>
               <div className="grid grid-cols-7 text-center text-gray-400 text-sm gap-2">
                 {"Sun Mon Tue Wed Thu Fri Sat".split(" ").map((d) => (
@@ -175,7 +185,7 @@ export default function Dashboard() {
                   </div>
                 ))}
               </div>
-            </Card>
+            </Card> */}
 
             {/* Recent Activities */}
             <Card className="bg-[#1a1d29] border border-[#2a2e3d] rounded-2xl p-5 xl:col-span-2">
