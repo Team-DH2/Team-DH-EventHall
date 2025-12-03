@@ -12,9 +12,11 @@ export default function EventHallForm() {
   const [hallName, setHallName] = useState<string>("");
   const [location, setLocation] = useState<string>("");
   const [number, setNumber] = useState<string>("");
-  const [gmail, setGmail] = useState<string>("");
+  const [email, setEmail] = useState<string>("");
   const [images, setImages] = useState<File[]>([]);
+  const [loading, setLoading] = useState(false);
 
+  // Add image
   const handleAddImage = (e: ChangeEvent<HTMLInputElement>, index: number) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -28,24 +30,54 @@ export default function EventHallForm() {
     }
   };
 
+  // Delete image
   const deleteImage = (index: number) => {
     const updated = images.filter((_, i) => i !== index);
     setImages(updated);
   };
 
-  const Form = async (e: React.FormEvent) => {
+  // Submit
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!email.includes("@")) return alert("Email buruu baina!");
+    setLoading(true);
+
     try {
+      const base64Images = await Promise.all(
+        images.map(async (img) => {
+          const arrayBuffer = await img.arrayBuffer();
+          const buffer = Buffer.from(arrayBuffer);
+          return `data:${img.type};base64,${buffer.toString("base64")}`;
+        })
+      );
+
       const response = await fetch("/api/form", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ name, hallName, location, number, gmail }),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name,
+          hallName,
+          location,
+          number,
+          email,
+          images: base64Images,
+        }),
       });
+
       const data = await response.json();
+      alert(data.message);
+
+      setName("");
+      setHallName("");
+      setLocation("");
+      setNumber("");
+      setEmail("");
+      setImages([]);
     } catch (error) {
-      console.log("Error");
+      console.log(error);
+      alert("Aldaaa");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -65,8 +97,9 @@ export default function EventHallForm() {
                 Холбоо барих хүний нэр *
               </div>
               <Input
+                type="name"
                 className="h-12 rounded-xl bg-neutral-700/30 border-neutral-500/40 text-neutral-200"
-                placeholder="Заалны нэр"
+                placeholder="Холбоо барих хүний нэр"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
               />
@@ -119,19 +152,19 @@ export default function EventHallForm() {
               <Input
                 className="h-12 rounded-xl bg-neutral-700/30 border-neutral-500/40 text-neutral-200"
                 placeholder="example@gmail.com"
-                value={gmail}
-                onChange={(e) => setGmail(e.target.value)}
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
               />
             </div>
 
-            {/* Pictures */}
+            {/* Images */}
             <div className="space-y-4">
               <div className="text-neutral-300 font-medium text-sm">
                 Зургууд *
               </div>
 
-              {images.map((img, index) => (
-                <div key={index} className="space-y-2">
+              {images.map((img, i) => (
+                <div key={i} className="space-y-2">
                   {img ? (
                     <div className="flex items-start gap-2">
                       <Image
@@ -142,7 +175,7 @@ export default function EventHallForm() {
                         className="rounded-xl border border-neutral-500/40 "
                       />
                       <TrashIcon
-                        onClick={() => deleteImage(index)}
+                        onClick={() => deleteImage(i)}
                         className="text-neutral-300 relative cursor-pointer hover:text-red-500 transition"
                         size={22}
                       />
@@ -161,17 +194,19 @@ export default function EventHallForm() {
             </div>
 
             {/*  */}
-            <Button className="w-full h-12 rounded-xl bg-linear-to-r from-rose-600 to-purple-600 hover:brightness-110 hover:scale-[1.02] transition-all shadow-xl">
-              Бүртгэх
+            <Button
+              type="submit"
+              disabled={loading}
+              className="w-full h-12 rounded-xl bg-linear-to-r from-rose-600 to-purple-600 hover:brightness-110 hover:scale-[1.02] transition-all shadow-xl"
+              onClick={handleSubmit}
+            >
+              {loading ? "Burtgej baina......" : " Burtgeh"}
             </Button>
           </form>
 
           <div className="text-center text-neutral-300">эсвэл</div>
           <Link href="/home">
-            <Button
-              variant="outline"
-              className="w-full h-12 rounded-xl text-black text-lg border-neutral-500/40 hover:bg-neutral-700/40 transition"
-            >
+            <Button className="w-full h-12 bg-white rounded-xl text-black text-lg border-neutral-500/40 hover:bg-neutral-700/40 transition">
               🏠 Нүүр хуудас руу буцах
             </Button>
           </Link>
