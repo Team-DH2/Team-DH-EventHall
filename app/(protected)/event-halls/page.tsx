@@ -1,10 +1,10 @@
-import EventHalls from "@/app/nasocomponent/EventHalls";
+import BlueBackground from "@/components/us/BlueBackground";
 import React from "react";
 
 const page = () => {
   return (
-    <div>
-      <EventHalls />
+    <div className="">
+      <BlueBackground />
     </div>
   );
 };

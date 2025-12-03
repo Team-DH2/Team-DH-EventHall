@@ -11,14 +11,11 @@ export default function PerformersPage() {
   const [selectedAvailability, setSelectedAvailability] = useState<string[]>(
     []
   );
-  const [minPopularity, setMinPopularity] = useState<number>(0);
-  const [minPrice, setMinPrice] = useState<number>(0);
-  const [maxPrice, setMaxPrice] = useState<number>(100000000);
-  const [sortBy, setSortBy] = useState<string>("popularity");
+  const [minRating, setMinRating] = useState<number>(0);
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
 
   useEffect(() => {
-    fetchPerformers();
-    fetchGenres();
+    // fetchPerformers();
   }, []);
 
   const fetchPerformers = async () => {
@@ -93,25 +90,8 @@ export default function PerformersPage() {
 
   return (
     <div className="min-h-screen bg-black text-white">
-      <div className="container mx-auto px-4 py-8">
-        <div className="flex justify-between items-center mb-8">
-          <h1 className="text-4xl font-bold">Уран бүтээлчид хайх</h1>
-
-          {/* Sort Dropdown */}
-          <div className="flex items-center gap-3">
-            <label className="text-sm text-gray-400">Эрэмбэлэх:</label>
-            <select
-              value={sortBy}
-              onChange={(e) => setSortBy(e.target.value)}
-              className="bg-gray-800 text-white px-4 py-2 rounded-lg border border-gray-700 focus:border-blue-500 focus:outline-none"
-            >
-              <option value="popularity">Алдартай байдал</option>
-              <option value="price-high">Үнэ: Өндрөөс нам</option>
-              <option value="price-low">Үнэ: Намаас өндөр</option>
-              <option value="name">Нэр</option>
-            </select>
-          </div>
-        </div>
+      <div className="container mx-auto px-4 py-8 mt-16">
+        <h1 className="text-4xl font-bold mb-8">Find Performers</h1>
 
         <div className="flex gap-8">
           {/* Sidebar Filters */}
@@ -267,8 +247,8 @@ export default function PerformersPage() {
                   className="bg-gray-900 rounded-lg overflow-hidden hover:transform hover:scale-105 transition-transform"
                 >
                   {/* Performer Image */}
-                  <div className="relative h-100 bg-gray-800">
-                    <img
+                  <div className="relative h-64 bg-gray-800">
+                    <Image
                       src={
                         performer.image ||
                         "https://via.placeholder.com/400x300?text=No+Image"

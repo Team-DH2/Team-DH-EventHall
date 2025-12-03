@@ -13,7 +13,7 @@ interface TimeSlotProps {
 }
 
 export default function TimeSlot({ data, onClick }: TimeSlotProps) {
-  const { time, price, status } = data;
+  const { time, status } = data;
   const isBooked = status === "booked";
 
   return (

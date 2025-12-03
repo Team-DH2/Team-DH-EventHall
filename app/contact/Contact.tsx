@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 export default function Contact() {
   const team = [
     {
@@ -94,7 +96,6 @@ export default function Contact() {
         </div>
       </div>
 
-      {/*  */}
       <div className="bg-neutral-900 rounded-2xl w-full h-[1200px] mt-16 justify-center text-center">
         <h1 className="text-5xl md:text-6xl font-extrabold mb-6 leading-tight pt-[100px]">
           Meet Our Visionary Team
@@ -112,10 +113,12 @@ export default function Contact() {
               key={i}
               className="bg-neutral-800 rounded-2xl text-center pb-6 overflow-hidden shadow-2xl hover:scale-[1.02] duration-200"
             >
-              <img
+              <Image
                 src={member.image}
                 className="w-full h-64 object-cover"
                 alt={member.name}
+                width={400}
+                height={256}
               />
               <h3 className="text-2xl font-semibold mt-4">{member.name}</h3>
               <p className="text-blue-400 mt-1">{member.role}</p>
@@ -130,8 +133,8 @@ export default function Contact() {
           Connect With EventLux
         </h1>
         <p className="md:text-xl font-sans">
-          We're here to help bring your vision to life. Reach out to us for any
-          inquiries or to start planning your next
+          {`We're here to help bring your vision to life. Reach out to us for any
+          inquiries or to start planning your next`}
           <br />
           spectacular event.
         </p>

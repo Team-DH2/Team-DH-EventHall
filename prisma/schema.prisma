@@ -8,6 +8,8 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+
+
 model booking {
   id           Int           @id @default(autoincrement())
   userid       Int
@@ -22,7 +24,7 @@ model booking {
   event_halls  event_halls?  @relation(fields: [hallid], references: [id], onDelete: NoAction, onUpdate: NoAction)
   hosts        hosts?        @relation(fields: [hostid], references: [id], onDelete: NoAction, onUpdate: NoAction)
   performers   performers?   @relation(fields: [performersid], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  mruser       mruser        @relation(fields: [userid], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  User         mruser        @relation(fields: [userid], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
 
 model event_halls {
@@ -79,6 +81,18 @@ model performers {
   best_songs       String[]
   music_url        String?   @db.VarChar(500)
   booking          booking[]
+}
+
+model mruser {
+  id         Int       @id(map: "User_pkey") @default(autoincrement())
+  name       String    @db.VarChar(255)
+  email      String    @unique(map: "User_email_key") @db.VarChar(255)
+  password   String    @db.VarChar(255)
+  role       String    @db.VarChar(50)
+  createdat  DateTime? @default(now()) @db.Timestamp(6)
+  updatedate DateTime? @db.Timestamptz(6)
+  phone      String?   @db.VarChar(20)
+  booking    booking[]
 }
 
 enum bookingstatus {
