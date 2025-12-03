@@ -8,6 +8,7 @@ const nextConfig: NextConfig = {
         hostname: "**",
       },
     ],
+    unoptimized: true, // Disable image optimization to avoid timeout errors
   },
 };
 

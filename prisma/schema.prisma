@@ -6,8 +6,6 @@ datasource db {
   provider = "postgresql"
 }
 
-
-
 model booking {
   id           Int           @id @default(autoincrement())
   userid       Int
@@ -48,6 +46,11 @@ model hosts {
   name          String    @db.VarChar(255)
   contact_email String?   @db.VarChar(255)
   contact_phone String?   @db.VarChar(50)
+  title         String?   @db.VarChar(255)
+  image         String?
+  tags          String[]  @default([])
+  rating        Float?    @default(0) @db.Real
+  status        String?   @default("Available") @db.VarChar(50)
   booking       booking[]
 }
 
@@ -78,7 +81,34 @@ model performers {
   popularity       Int?
   best_songs       String[]
   music_url        String?   @db.VarChar(500)
+  name1            String?   @db.VarChar(255)
   booking          booking[]
+}
+
+model Form {
+  id        Int       @id @default(autoincrement())
+  name      String
+  hallname  String
+  location  String
+  number    String
+  email     String
+  images    String[]
+  createdat DateTime? @default(now()) @db.Timestamp(6)
+}
+
+model performers_new {
+  id               Int      @id @default(autoincrement())
+  name             String?  @db.VarChar(255)
+  music_url        String?
+  bio_text         String?
+  genre            String?  @db.VarChar(255)
+  contact_email    String?  @db.VarChar(255)
+  contact_phone    String?  @db.VarChar(50)
+  image            String?
+  performance_type String?  @db.VarChar(100)
+  availability     String?  @db.VarChar(100)
+  rating           Decimal? @db.Decimal
+  price            Decimal? @db.Decimal
 }
 
 enum bookingstatus {
