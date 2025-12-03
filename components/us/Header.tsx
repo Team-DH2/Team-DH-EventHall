@@ -2,11 +2,20 @@
 import React, { useState, useEffect } from "react";
 import { ButtonOfNav } from "./ButtonOfNav";
 import { Input } from "../ui/input";
-import { Search, X } from "lucide-react";
+import {
+  Building,
+  Home,
+  LayoutDashboard,
+  Music,
+  Search,
+  Users,
+  X,
+} from "lucide-react";
 
 import { BottomNavButton } from "./BottomNavButton";
 import { AuthForm } from "./AuthForm";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
+import { Logo } from "./Logo";
 
 export const Header = () => {
   const [isPhoneSearchOpen, setIsPhoneSearchOpen] = useState(false);

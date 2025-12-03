@@ -24,7 +24,8 @@ export async function POST(req: NextRequest) {
       return NextResponse.json([]);
     }
 
-    const formatted = slots.map((s) => ({
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const formatted = slots.map((s: any) => ({
       id: s.id,
       date: s.slot_date
         ? s.slot_date.toISOString().split("T")[0]
@@ -36,7 +37,8 @@ export async function POST(req: NextRequest) {
     }));
     console.log(
       "Formatted slots with statuses:",
-      formatted.filter((f) => f.status === "booked")
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      formatted.filter((f: any) => f.status === "booked")
     );
     console.log("Total formatted slots:", formatted.length);
     return NextResponse.json(formatted);

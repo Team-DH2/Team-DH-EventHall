@@ -60,7 +60,7 @@ export default function EventHallsPage({
   };
 
   return (
-    <aside className="w-full bg-[#1F2024] text-gray-200 rounded-2xl p-6 shadow-lg border border-[#2f2f36] relative">
+    <aside className="w-full bg-neutral-900 text-gray-200 rounded-2xl p-6 shadow-lg  relative">
       <h2 className="text-2xl font-semibold mb-6">Filter Event Halls</h2>
 
       {/* Location */}

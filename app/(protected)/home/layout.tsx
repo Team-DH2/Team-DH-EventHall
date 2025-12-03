@@ -1,5 +1,4 @@
 import { Header } from "@/components/us/Header";
-import { LayoutFooter } from "@/components/us/LayoutFooter";
 
 export default function RootLayout({
   children,
@@ -16,7 +15,6 @@ export default function RootLayout({
       <main className="h-screen w-screen overflow-y-auto snap-y snap-mandatory">
         {children}
       </main>
-      <LayoutFooter />
     </div>
   );
 }
