@@ -39,7 +39,6 @@ export default function EventHallForm() {
   // Submit
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email.includes("@")) return alert("Email buruu baina!");
     setLoading(true);
 
     try {

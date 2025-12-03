@@ -46,22 +46,22 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const { name, hallName, location, number, email, images } = body;
 
-    // 1️⃣ Cloudinary-д upload хийх
+    // Cloudinary-д upload хийх
     const uploadedImages: string[] = [];
     for (const img of images) {
       const url = await uploadImageToCloudinary(img);
       uploadedImages.push(url);
     }
 
-    // 2️⃣ Prisma-д хадгалах
-    const form = await prisma.Form.create({
+    //  Prisma-д хадгалах
+    const form = await prisma.form.create({
       data: {
-        name,
-        hallName,
-        location,
-        number,
-        email,
-        images: uploadedImages, // Cloudinary URL-ууд
+        name: name,
+        hallname: hallName,
+        location: location,
+        number: number,
+        email: email,
+        images: uploadedImages,
       },
     });
 
