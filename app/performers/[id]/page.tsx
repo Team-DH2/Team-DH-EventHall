@@ -56,7 +56,7 @@ export default function PerformerDetailPage() {
     }
   };
 
-  // Extract YouTube video ID from URL
+  // Extract YouTube video ID from URL xaxa
   const getYouTubeVideoId = (url: string) => {
     const regExp =
       /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;

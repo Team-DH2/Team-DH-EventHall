@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { FaStar } from "react-icons/fa";
+import Image from "next/image";
 
 export default function PerformersPage() {
   const router = useRouter();
@@ -11,11 +12,15 @@ export default function PerformersPage() {
   const [selectedAvailability, setSelectedAvailability] = useState<string[]>(
     []
   );
-  const [minRating, setMinRating] = useState<number>(0);
+  const [minPopularity, setMinPopularity] = useState<number>(0);
+  const [minPrice, setMinPrice] = useState<number>(0);
+  const [maxPrice, setMaxPrice] = useState<number>(100000000);
+  const [sortBy, setSortBy] = useState<string>("popularity");
   const [isFilterOpen, setIsFilterOpen] = useState(false);
 
   useEffect(() => {
-    // fetchPerformers();
+    fetchPerformers();
+    fetchGenres();
   }, []);
 
   const fetchPerformers = async () => {
