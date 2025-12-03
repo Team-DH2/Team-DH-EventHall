@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { FaStar } from "react-icons/fa";
+import { FaStar, FaChevronDown, FaChevronUp } from "react-icons/fa";
 import Image from "next/image";
 
 export default function PerformersPage() {
@@ -16,7 +16,7 @@ export default function PerformersPage() {
   const [minPrice, setMinPrice] = useState<number>(0);
   const [maxPrice, setMaxPrice] = useState<number>(100000000);
   const [sortBy, setSortBy] = useState<string>("popularity");
-  const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [isGenreOpen, setIsGenreOpen] = useState(false);
 
   useEffect(() => {
     fetchPerformers();
@@ -96,47 +96,62 @@ export default function PerformersPage() {
   return (
     <div className="min-h-screen bg-black text-white">
       <div className="container mx-auto px-4 py-8 mt-16">
-        <h1 className="text-4xl font-bold mb-8">Find Performers</h1>
+        <h1 className="text-4xl font-bold mb-8">Уран бүтээлчид хайх</h1>
 
+        {/*sidebar*/}
         <div className="flex gap-8">
+          {/*booking information */}
+          <div> </div>
           {/* Sidebar Filters */}
           <div className="w-64 bg-gray-900 rounded-lg p-6 h-fit sticky top-8">
-            <h2 className="text-xl font-bold mb-4">Шүүлтүүр</h2>
+            <h2 className="text-xl font-bold text-blue-400 mb-4">Шүүлтүүр</h2>
 
             {/* Genre Filter */}
             <div className="mb-6">
-              <h3 className="font-semibold mb-3 flex items-center gap-2">
+              <h3
+                className="font-semibold mb-3 flex items-center gap-2 cursor-pointer hover:text-blue-400 transition-colors"
+                onClick={() => setIsGenreOpen(!isGenreOpen)}
+              >
                 <span>🎵</span> Төрөл
+                {isGenreOpen ? (
+                  <FaChevronUp className="ml-auto text-sm" />
+                ) : (
+                  <FaChevronDown className="ml-auto text-sm" />
+                )}
               </h3>
-              <div className="space-y-2">
-                {genres.map((genre) => (
-                  <label
-                    key={genre}
-                    className="flex items-center gap-2 cursor-pointer"
-                  >
-                    <input
-                      type="checkbox"
-                      checked={selectedGenres.includes(genre)}
-                      onChange={(e) => {
-                        if (e.target.checked) {
-                          setSelectedGenres([...selectedGenres, genre]);
-                        } else {
-                          setSelectedGenres(
-                            selectedGenres.filter((g) => g !== genre)
-                          );
-                        }
-                      }}
-                      className="w-4 h-4"
-                    />
-                    <span>{genre}</span>
-                  </label>
-                ))}
-              </div>
+              {isGenreOpen && (
+                <div className="space-y-2">
+                  {genres.map((genre) => (
+                    <label
+                      key={genre}
+                      className="flex items-center gap-2 cursor-pointer"
+                    >
+                      <input
+                        type="checkbox"
+                        checked={selectedGenres.includes(genre)}
+                        onChange={(e) => {
+                          if (e.target.checked) {
+                            setSelectedGenres([...selectedGenres, genre]);
+                          } else {
+                            setSelectedGenres(
+                              selectedGenres.filter((g) => g !== genre)
+                            );
+                          }
+                        }}
+                        className="w-4 h-4"
+                      />
+                      <span>{genre}</span>
+                    </label>
+                  ))}
+                </div>
+              )}
             </div>
 
             {/* Availability Filter */}
             <div className="mb-6">
-              <h3 className="font-semibold mb-3">Боломжтой эсэх</h3>
+              <h3 className="font-semibold text-blue-400 mb-3">
+                Боломжтой эсэх
+              </h3>
               <div className="space-y-2">
                 {availabilityOptions.map((option) => (
                   <label
@@ -168,7 +183,9 @@ export default function PerformersPage() {
 
             {/* Popularity Filter */}
             <div className="mb-6">
-              <h3 className="font-semibold mb-3">Алдартай байдал</h3>
+              <h3 className="font-semibold text-blue-400 mb-3">
+                Алдартай байдал
+              </h3>
               <input
                 type="range"
                 min="0"
@@ -185,7 +202,7 @@ export default function PerformersPage() {
 
             {/* Price Range Filter */}
             <div className="mb-6">
-              <h3 className="font-semibold mb-3">Үнийн хүрээ</h3>
+              <h3 className="font-semibold text-blue-400 mb-3">Үнийн хүрээ</h3>
               <div className="space-y-3">
                 <div>
                   <label className="text-xs text-gray-400 mb-1 block">
@@ -252,7 +269,7 @@ export default function PerformersPage() {
                   className="bg-gray-900 rounded-lg overflow-hidden hover:transform hover:scale-105 transition-transform"
                 >
                   {/* Performer Image */}
-                  <div className="relative h-64 bg-gray-800">
+                  <div className="relative h-90 bg-gray-800">
                     <Image
                       src={
                         performer.image ||
