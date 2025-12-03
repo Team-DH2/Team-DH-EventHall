@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import Image from "next/image";
-
+import Autoplay from "embla-carousel-autoplay";
 import { Card, CardContent } from "@/components/ui/card";
 import { Carousel as CarouselDefault } from "@/components/ui/carousel"; // default export
 import type { CarouselApi } from "@/components/ui/carousel"; // type only
@@ -56,7 +56,7 @@ export const CarouselMy = ({ halls }: { halls: HallType[] }) => {
       </CarouselDefault>
 
       {/* Pagination dots */}
-      <div className="absolute bottom-6 left-0 right-0 flex justify-center z-30">
+      <div className="absolute hidden lg:flex bottom-6 left-0 right-0  justify-center z-30">
         <div className="flex gap-2">
           {Array.from({ length: count }).map((_, index) => (
             <button
@@ -81,12 +81,15 @@ const CarouselCard = ({ el }: { el: HallType }) => {
       <Card className="w-full h-full p-0 border-0 ml-[16] shadow-none rounded-none  relative">
         {/* Image */}
         <Image
-          src={el.backdrop_path}
+          src={
+            el.backdrop_path ||
+            "https://img.freepik.com/premium-vector/image-icon-design-vector-template_1309674-943.jpg"
+          }
           alt={el.title}
-          fill
+          fill={true}
           priority
-          sizes="(max-width: 768px) 100vh, 100vh"
-          className="object-cover w-full h-full "
+          sizes="100vw"
+          className="object-cover"
         />
 
         {/* Background overlay */}
@@ -95,7 +98,7 @@ const CarouselCard = ({ el }: { el: HallType }) => {
         {/* Desktop overlay */}
         <CardContent className="hidden sm:flex flex-col absolute top-1/3 left-[6%] lg:left-[12%] -translate-y-1/3 text-white">
           <p className="mb-0 font-medium text-sm lg:text-base [text-shadow:0_1px_3px_rgb(0_0_0/0.5)]">
-            Now Playing:
+            Event Hall:
           </p>
           <h1 className="font-extrabold text-4xl lg:text-6xl [text-shadow:0_2px_4px_rgb(0_0_0/0.5)]">
             {el.title}
@@ -129,8 +132,11 @@ const CarouselCard = ({ el }: { el: HallType }) => {
 
         {/* Mobile overlay */}
         <CardContent className="sm:hidden absolute inset-0 mt-0 flex flex-col justify-center p-6 text-white z-10">
-          <p className="mb-1 font-medium text-[14px] [text-shadow:0_1px_3px_rgb(0_0_0/0.5)]">
-            Now Playing:
+          <p
+            style={{ animationDelay: "200ms" }}
+            className="mb-1 font-medium text-[14px] [text-shadow:0_1px_3px_rgb(0_0_0/0.5)]"
+          >
+            Event Hall:
           </p>
           <h1 className="font-bold text-2xl mb-1 [text-shadow:0_2px_4px_rgb(0_0_0/0.5)]">
             {el.title}
@@ -163,6 +169,3 @@ const CarouselCard = ({ el }: { el: HallType }) => {
     </CarouselItem>
   );
 };
-function Autoplay(arg0: { delay: number }): any {
-  throw new Error("Function not implemented.");
-}

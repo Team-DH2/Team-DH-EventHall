@@ -270,10 +270,13 @@ export default function PerformersPage() {
                   <div className="relative h-100 bg-gray-800">
                     <img
                       src={
-                        performer.image || "https://via.placeholder.com/400x300"
+                        performer.image ||
+                        "https://via.placeholder.com/400x300?text=No+Image"
                       }
                       alt={performer.name}
-                      className="w-full h-full object-cover"
+                      fill
+                      sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                      className="object-cover"
                     />
                     <div
                       className={`absolute top-3 left-3 ${getAvailabilityColor(
