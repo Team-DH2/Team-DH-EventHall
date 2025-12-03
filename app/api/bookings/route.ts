@@ -36,54 +36,55 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   try {
-    const body = await req.json();
-    console.log({ body });
+    const { hallId, bookings } = await req.json();
 
-    const { hallId, date, type } = body;
-
-    if (!hallId || !date || !type) {
+    if (!hallId || !bookings || !Array.isArray(bookings)) {
       return NextResponse.json(
-        { error: "Танхим, өдөр, цаг шаардлагатай" },
+        { error: "Танхим болон bookings array шаардлагатай" },
         { status: 400 }
       );
     }
 
-    // AM / PM → эхлэх/дуусах цаг
-    let starttime = "";
-    let endtime = "";
+    const createdBookings = [];
 
-    if (type === "am") {
-      starttime = "08:00";
-      endtime = "14:00";
-    } else if (type === "pm") {
-      starttime = "18:00";
-      endtime = "23:00";
-    } else {
-      starttime = "09:00";
-      endtime = "24:00";
+    for (const b of bookings) {
+      const { date, type } = b;
+      if (!date || !type) continue;
+
+      let starttime = "",
+        endtime = "";
+      if (type === "am") {
+        starttime = "08:00";
+        endtime = "14:00";
+      } else if (type === "pm") {
+        starttime = "18:00";
+        endtime = "23:00";
+      } else {
+        starttime = "09:00";
+        endtime = "24:00";
+      }
+
+      const booking = await prisma.booking.create({
+        data: {
+          userid: 1,
+          hallid: Number(hallId),
+          hostid: 1,
+          ordereddate: new Date(),
+          date: new Date(date),
+          starttime,
+          endtime,
+          status: "pending",
+        },
+      });
+
+      createdBookings.push(booking);
     }
 
-    const userId = 1;
-    const hostId = 1;
-
-    const booking = await prisma.booking.create({
-      data: {
-        userid: userId,
-        hallid: Number(hallId),
-        hostid: hostId,
-
-        ordereddate: new Date(), // захиалга өгсөн огноо
-        date: new Date(date),
-
-        starttime,
-        endtime,
-
-        status: "pending",
-      },
-    });
-
     return NextResponse.json(
-      { message: "Захиалга амжилттай хадгалагдлаа", booking },
+      {
+        message: "Захиалгууд амжилттай хадгалагдлаа",
+        bookings: createdBookings,
+      },
       { status: 201 }
     );
   } catch (error) {

@@ -58,11 +58,7 @@ export default function Dashboard() {
           </Card>
           <Card className="bg-[#11131b] border border-[#2a2e3d] rounded-2xl p-4">
             <p className="text-sm text-gray-400">Total Booked Revenue</p>
-            <h3 className="text-3xl font-bold text-blue-300">
-              {bookings.map((item: any) => (
-                <div>{item.event_halls.menu}</div>
-              ))}
-            </h3>
+            <h3 className="text-3xl font-bold text-blue-300"></h3>
           </Card>
           {/* <Button>Tulbur Tuluh</Button> */}
         </div>
@@ -86,7 +82,7 @@ export default function Dashboard() {
 
                 {/* CONTENT */}
                 <div className="p-4 space-y-3">
-                  <h2 className="text-xl font-semibold">
+                  <h2 className="text-xl font-semibold text-black">
                     {b.event_halls?.name ?? "Event Hall"}
                   </h2>
 

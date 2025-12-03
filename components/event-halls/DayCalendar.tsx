@@ -3,40 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import DateForm from "./DateForm";
-
-function generateCalendar(year: number, month: number) {
-  const firstDay = new Date(year, month, 1);
-  const lastDay = new Date(year, month + 1, 0);
-  const prevLastDay = new Date(year, month, 0).getDate();
-  const startDay = (firstDay.getDay() + 6) % 7;
-
-  const weeks: { day: number; current: boolean }[][] = [];
-  let currentWeek: { day: number; current: boolean }[] = [];
-
-  for (let i = 0; i < startDay; i++) {
-    currentWeek.push({
-      day: prevLastDay - (startDay - 1 - i),
-      current: false,
-    });
-  }
-
-  for (let d = 1; d <= lastDay.getDate(); d++) {
-    currentWeek.push({ day: d, current: true });
-    if (currentWeek.length === 7) {
-      weeks.push(currentWeek);
-      currentWeek = [];
-    }
-  }
-
-  if (currentWeek.length > 0) {
-    let nextDay = 1;
-    while (currentWeek.length < 7) {
-      currentWeek.push({ day: nextDay++, current: false });
-    }
-    weeks.push(currentWeek);
-  }
-  return weeks;
-}
+import generateCalendar from "@/lib/utilfunction/GenerateCalendar";
 
 export default function BookingCalendar({
   hallId,
@@ -71,22 +38,12 @@ export default function BookingCalendar({
     } else setCurrentMonth(currentMonth + 1);
   };
 
-  // const prevMonth = () => {
-  //   if (currentMonth === 0) {
-  //     setCurrentMonth(11);
-  //     setCurrentYear(currentYear - 1);
-  //   } else setCurrentMonth(currentMonth - 1);
-  // };
-
-  // Time Box Component
   const TimeBox = ({
     type,
     day,
-    disabled = false,
   }: {
     type: "am" | "pm" | "udur";
     day: number;
-    disabled?: boolean;
   }) => {
     const dateStr = `${currentYear}-${String(currentMonth + 1).padStart(
       2,
@@ -98,29 +55,34 @@ export default function BookingCalendar({
       pm: "18:00 - 22:00",
       udur: "09:00 - 18:00",
     };
-
     const label = labelMap[type];
-    const isPast = new Date(dateStr).getTime() < new Date(todayStr).getTime();
 
-    // ✨ Check bookings for this exact date
+    const isPast = new Date(dateStr).getTime() < new Date(todayStr).getTime();
     const dayBookings = bookings.filter(
       (b) => new Date(b.date).toISOString().split("T")[0] === dateStr
     );
 
+    const isAmBooked = dayBookings.some(
+      (b) => parseInt(b.starttime.split(":")[0], 10) === 8
+    );
+    const isPmBooked = dayBookings.some(
+      (b) => parseInt(b.starttime.split(":")[0], 10) === 18
+    );
+    const isUdureBooked = dayBookings.some(
+      (b) => parseInt(b.starttime.split(":")[0], 10) === 9
+    );
+
+    // Захиалга эсвэл өнгөрсөн өдөр шалгах
     let isAvailable = !isPast;
-
-    if (!disabled && dayBookings.length > 0 && !isPast) {
-      const isBooked = dayBookings.some((b) => {
-        const startHour = parseInt(b.starttime.split(":")[0], 10);
-        return (
-          (type === "am" && startHour === 8) ||
-          (type === "udur" && startHour === 9) ||
-          (type === "pm" && startHour === 18)
-        );
-      });
-
-      if (isBooked) isAvailable = false;
+    if (
+      (type === "am" && (isAmBooked || isUdureBooked)) ||
+      (type === "pm" && (isPmBooked || isUdureBooked)) ||
+      (type === "udur" && (isUdureBooked || isAmBooked || isPmBooked))
+    ) {
+      isAvailable = false;
     }
+
+    if (isPast) return null;
 
     const isSelected = selected.some(
       (sel) => sel.date === dateStr && sel.type === type
@@ -131,10 +93,12 @@ export default function BookingCalendar({
         2,
         "0"
       )}-${String(day).padStart(2, "0")}`;
-
       setSelected((prev) => {
-        const removed = prev.filter((s) => s.date !== newDate);
-        return [...removed, { date: newDate, type }];
+        const exists = prev.find((s) => s.date === newDate && s.type === type);
+        if (exists)
+          return prev.filter((s) => !(s.date === newDate && s.type === type));
+        const newSelected = prev.filter((s) => !(s.date === newDate));
+        return [...newSelected, { date: newDate, type }];
       });
     };
 
@@ -150,12 +114,11 @@ export default function BookingCalendar({
       <button
         onClick={() => handleSelect(day, type)}
         disabled={!isAvailable}
-        className={`w-full rounded-xl border p-2 text-center text-sm font-medium transition-all
-          ${
-            isSelected
-              ? "bg-blue-600 text-white shadow-md scale-[1.05]"
-              : "bg-white hover:bg-blue-50"
-          }`}
+        className={`w-full rounded-xl border p-2 text-center text-sm font-medium transition-all ${
+          isSelected
+            ? "bg-blue-600 text-white shadow-md scale-[1.05]"
+            : "bg-white hover:bg-blue-50"
+        }`}
       >
         {label}
       </button>
@@ -180,15 +143,9 @@ export default function BookingCalendar({
           <h2 className="text-2xl font-bold">
             {currentYear} – {currentMonth + 1} сар
           </h2>
-          <div className="flex gap-3 items-center">
-            <Button
-              variant="outline"
-              className="text-black"
-              onClick={nextMonth}
-            >
-              ›
-            </Button>
-          </div>
+          <Button variant="outline" className="text-black" onClick={nextMonth}>
+            ›
+          </Button>
         </div>
 
         <div className="grid grid-cols-7 text-center font-semibold text-white mb-2">
@@ -198,90 +155,69 @@ export default function BookingCalendar({
         </div>
 
         <div className="grid grid-cols-7 gap-2">
-          {weeks.map((week, i) => (
-            <React.Fragment key={i}>
-              {week.map((dayObj, j) => {
-                const { day, current } = dayObj;
+          {weeks.map((week, i) =>
+            week.map((dayObj, j) => {
+              const { day, current } = dayObj;
 
-                if (!current) {
-                  return (
-                    <div
-                      key={j}
-                      className="min-h-[110px] bg-gray-300 rounded-xl p-2"
-                    >
-                      {day}
-                    </div>
-                  );
-                }
-
-                const dateStr = `${currentYear}-${String(
-                  currentMonth + 1
-                ).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
-
-                const isPast =
-                  new Date(dateStr).getTime() < new Date(todayStr).getTime();
-
-                const dayBookings = bookings.filter(
-                  (b) =>
-                    new Date(b.date).toISOString().split("T")[0] === dateStr
-                );
-
-                const isAmBooked = dayBookings.some(
-                  (b) => parseInt(b.starttime.split(":")[0], 10) === 8
-                );
-                const isPmBooked = dayBookings.some(
-                  (b) => parseInt(b.starttime.split(":")[0], 10) === 18
-                );
-                const isDayBooked = dayBookings.some(
-                  (b) => parseInt(b.starttime.split(":")[0], 10) === 9
-                );
-
-                const isPartial = isAmBooked || isPmBooked;
-
+              if (!current)
                 return (
                   <div
                     key={j}
-                    className={`min-h-[110px] border rounded-xl p-2 flex flex-col gap-2 
-                      ${
-                        isPast
-                          ? "bg-gray-300"
-                          : isDayBooked
-                          ? "bg-red-300"
-                          : "bg-gray-50"
-                      }`}
+                    className="min-h-[110px] bg-gray-300 rounded-xl p-2"
                   >
-                    <div
-                      className={`text-sm font-medium ${
-                        isPast
-                          ? "text-gray-400"
-                          : isDayBooked
-                          ? "text-red-700"
-                          : "text-gray-800"
-                      }`}
-                    >
-                      {day}
-                    </div>
-
-                    <TimeBox
-                      type="am"
-                      day={day}
-                      disabled={isDayBooked || isPast}
-                    />
-                    <TimeBox
-                      type="pm"
-                      day={day}
-                      disabled={isDayBooked || isPast}
-                    />
-                    <TimeBox
-                      type="udur"
-                      day={day}
-                      disabled={isDayBooked || isPartial || isPast}
-                    />
+                    {day}
                   </div>
                 );
-              })}
-            </React.Fragment>
-          ))}
+
+              const dateStr = `${currentYear}-${String(
+                currentMonth + 1
+              ).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+              const isPast =
+                new Date(dateStr).getTime() < new Date(todayStr).getTime();
+              const dayBookings = bookings.filter(
+                (b) => new Date(b.date).toISOString().split("T")[0] === dateStr
+              );
+
+              const isAmBooked = dayBookings.some(
+                (b) => parseInt(b.starttime.split(":")[0], 10) === 8
+              );
+              const isPmBooked = dayBookings.some(
+                (b) => parseInt(b.starttime.split(":")[0], 10) === 18
+              );
+              const isUdureBooked = dayBookings.some(
+                (b) => parseInt(b.starttime.split(":")[0], 10) === 9
+              );
+              const isPartial = isAmBooked || isPmBooked;
+
+              return (
+                <div
+                  key={j}
+                  className={`min-h-[110px] border rounded-xl p-2 flex flex-col gap-2 ${
+                    isPast
+                      ? "bg-gray-400"
+                      : isUdureBooked
+                      ? "bg-red-300"
+                      : "bg-gray-50"
+                  }`}
+                >
+                  <div
+                    className={`text-sm font-medium ${
+                      isPast
+                        ? "text-black"
+                        : isUdureBooked
+                        ? "text-red-700"
+                        : "text-black"
+                    }`}
+                  >
+                    {day}
+                  </div>
+                  <TimeBox type="am" day={day} />
+                  <TimeBox type="pm" day={day} />
+                  <TimeBox type="udur" day={day} />
+                </div>
+              );
+            })
+          )}
         </div>
       </div>
 
