@@ -13,9 +13,10 @@ export default function SearchFunction() {
   const [results, setResults] = useState<any>(null);
   const [loading, setLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+  const [firstOpen, setFirstOpen] = useState(false);
   const router = useRouter();
 
-  // Debounce search
+  // Debounce
   useEffect(() => {
     if (!searchValue) {
       setResults(null);
@@ -30,6 +31,8 @@ export default function SearchFunction() {
   }, [searchValue]);
 
   const handleSearch = async () => {
+    if (!searchValue.trim()) return;
+
     setLoading(true);
 
     try {
@@ -39,11 +42,7 @@ export default function SearchFunction() {
       });
 
       const data = await res.json();
-      if (data) {
-        setIsOpen(true);
-      } else {
-        setIsOpen(false);
-      }
+      setIsOpen(true);
       setResults(data);
     } catch (error) {
       console.error("Search error:", error);
@@ -56,11 +55,16 @@ export default function SearchFunction() {
     <div>
       <Popover
         open={isOpen}
-        onOpenChange={() => {
-          setIsOpen(false);
+        onOpenChange={(open) => {
+          if (!open) setIsOpen(false);
         }}
       >
-        <PopoverTrigger>
+        <PopoverTrigger
+          onClick={() => {
+            setIsOpen(true);
+            setFirstOpen(true);
+          }}
+        >
           <Input
             type="text"
             placeholder="Хайх..."
@@ -69,13 +73,27 @@ export default function SearchFunction() {
             className="w-full p-3 border rounded-lg text-white"
           />
         </PopoverTrigger>
+
         <PopoverContent
           onOpenAutoFocus={(e) => e.preventDefault()}
           onCloseAutoFocus={(e) => e.preventDefault()}
+          className="transition-all duration-200"
         >
-          {loading && <p className="mt-3 text-gray-400">Хайж байна...</p>}
-          {results && (
-            <div className="mt-4 space-y-6 h-fit max-h-200 overflow-scroll text-black">
+          {/* А. Эхний фокус үед гарч ирэх анхны текст */}
+          {!searchValue && firstOpen && (
+            <p className="text-gray-400 py-6 text-center">
+              Та хүссэн зүйлээ хайгаарай ✨
+            </p>
+          )}
+
+          {/* B. Хайж байгаа үед */}
+          {loading && (
+            <p className="mt-2 text-gray-400 text-center">Хайж байна...</p>
+          )}
+
+          {/* C. Илэрц гарсан үед */}
+          {results && !loading && searchValue && (
+            <div className="mt-2 space-y-6 max-h-80 overflow-auto text-black">
               {/* Event Halls */}
               {results?.halls?.length > 0 && (
                 <div>
@@ -86,10 +104,10 @@ export default function SearchFunction() {
                     {results.halls.map((hall: any) => (
                       <div
                         key={hall.id}
-                        className="p-3 bg-white rounded shadow"
+                        className="p-3 bg-white rounded shadow cursor-pointer hover:bg-gray-100 transition"
                       >
                         <div className="flex items-center gap-4">
-                          <img className="h-15 w-15" src={hall.images[0]}></img>
+                          <img className="h-15 w-15" src={hall.images[0]} />
                           <h3 className="font-semibold">{hall.name}</h3>
                           <Button
                             onClick={() =>
@@ -100,7 +118,6 @@ export default function SearchFunction() {
                             <FaArrowRight color="black" />
                           </Button>
                         </div>
-
                         <p className="text-sm text-gray-600">{hall.location}</p>
                       </div>
                     ))}
@@ -114,7 +131,10 @@ export default function SearchFunction() {
                   <h2 className="text-xl font-bold mb-2">🎤 Performers</h2>
                   <div className="space-y-2">
                     {results.performers.map((p: any) => (
-                      <div key={p.id} className="p-3 bg-white rounded shadow">
+                      <div
+                        key={p.id}
+                        className="p-3 bg-white rounded shadow hover:bg-gray-100 transition"
+                      >
                         <h3 className="font-semibold">{p.name}</h3>
                         <p className="text-sm text-gray-600">{p.genre}</p>
                       </div>
@@ -129,7 +149,10 @@ export default function SearchFunction() {
                   <h2 className="text-xl font-bold mb-2">🎙 Hosts</h2>
                   <div className="space-y-2">
                     {results.hosts.map((h: any) => (
-                      <div key={h.id} className="p-3 bg-white rounded shadow">
+                      <div
+                        key={h.id}
+                        className="p-3 bg-white rounded shadow hover:bg-gray-100 transition"
+                      >
                         <h3 className="font-semibold">{h.name}</h3>
                         <p className="text-sm text-gray-600">
                           {h.contact_phone}
@@ -140,11 +163,11 @@ export default function SearchFunction() {
                 </div>
               )}
 
-              {/* No results */}
+              {/* No Results */}
               {results?.halls?.length === 0 &&
                 results?.performers?.length === 0 &&
                 results?.hosts?.length === 0 && (
-                  <p className="text-gray-400">Илэрц олдсонгүй.</p>
+                  <p className="text-gray-400 text-center">Илэрц олдсонгүй.</p>
                 )}
             </div>
           )}

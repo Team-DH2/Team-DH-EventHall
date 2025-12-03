@@ -1,7 +1,6 @@
 "use client";
 import { useState } from "react";
 import { Users } from "lucide-react";
-import { mockEventHalls } from "./Mock";
 
 interface Hall {
   id: number;
@@ -23,10 +22,12 @@ const LOCATIONS = [
 ];
 
 interface EventHallsPageProps {
-  onFilterChange: (filteredHalls: Hall[]) => void;
+  originalData: Hall[]; // API-аас ирсэн дата
+  onFilterChange: (filtered: Hall[]) => void;
 }
 
 export default function EventHallsPage({
+  originalData,
   onFilterChange,
 }: EventHallsPageProps) {
   const MIN = 500;
@@ -37,19 +38,20 @@ export default function EventHallsPage({
   const [capacity, setCapacity] = useState("");
   const [openLoc, setOpenLoc] = useState(false);
 
-  // Apply filters
   const applyFilters = () => {
-    let filtered = [...mockEventHalls];
+    let filtered = [...originalData];
+    console.log({ filtered });
+    console.log({ location });
 
     if (location) {
       filtered = filtered.filter((hall) =>
-        hall.location.toLowerCase().includes(location.toLowerCase())
+        hall.location?.toLowerCase().includes(location.toLowerCase())
       );
     }
 
     if (capacity) {
       filtered = filtered.filter((hall) => {
-        const [maxCap] = hall.capacity.split("-").map(Number);
+        const [maxCap] = String(hall.capacity).split("-").map(Number);
         return maxCap >= Number(capacity);
       });
     }
@@ -57,6 +59,14 @@ export default function EventHallsPage({
     filtered = filtered.filter((hall) => hall.price <= price);
 
     onFilterChange(filtered);
+  };
+
+  const resetFilters = () => {
+    setLocation("");
+    setPrice(MAX);
+    setCapacity("");
+    setOpenLoc(false);
+    onFilterChange(originalData); // API дата буцааж харуулна
   };
 
   return (
@@ -136,7 +146,9 @@ export default function EventHallsPage({
             value={capacity}
             onChange={(e) => setCapacity(e.target.value)}
             placeholder="Min. guests"
-            className="bg-transparent outline-none w-full text-gray-200 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+            className="bg-transparent outline-none w-full text-gray-200 
+            [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none 
+            [&::-webkit-inner-spin-button]:appearance-none"
           />
         </div>
       </div>
@@ -151,13 +163,7 @@ export default function EventHallsPage({
         </button>
 
         <button
-          onClick={() => {
-            setLocation("");
-            setPrice(MAX);
-            setCapacity("");
-            setOpenLoc(false);
-            onFilterChange(mockEventHalls);
-          }}
+          onClick={resetFilters}
           className="border border-blue-600 text-blue-400 py-3 rounded-xl w-full hover:bg-blue-600 hover:text-white transition-colors"
         >
           Reset

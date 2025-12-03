@@ -7,9 +7,7 @@ import DateForm from "./DateForm";
 function generateCalendar(year: number, month: number) {
   const firstDay = new Date(year, month, 1);
   const lastDay = new Date(year, month + 1, 0);
-
   const prevLastDay = new Date(year, month, 0).getDate();
-
   const startDay = (firstDay.getDay() + 6) % 7;
 
   const weeks: { day: number; current: boolean }[][] = [];
@@ -24,7 +22,6 @@ function generateCalendar(year: number, month: number) {
 
   for (let d = 1; d <= lastDay.getDate(); d++) {
     currentWeek.push({ day: d, current: true });
-
     if (currentWeek.length === 7) {
       weeks.push(currentWeek);
       currentWeek = [];
@@ -38,7 +35,6 @@ function generateCalendar(year: number, month: number) {
     }
     weeks.push(currentWeek);
   }
-
   return weeks;
 }
 
@@ -60,27 +56,29 @@ export default function BookingCalendar({
   useEffect(() => {
     fetch("/api/bookings")
       .then((res) => res.json())
-      .then((data) => setBookings(data.bookings));
-  }, []);
+      .then((data) => {
+        const hallBookings = data.bookings.filter(
+          (b: any) => b.hallid == hallId
+        );
+        setBookings(hallBookings);
+      });
+  }, [hallId]);
 
   const nextMonth = () => {
     if (currentMonth === 11) {
       setCurrentMonth(0);
       setCurrentYear(currentYear + 1);
-    } else {
-      setCurrentMonth(currentMonth + 1);
-    }
+    } else setCurrentMonth(currentMonth + 1);
   };
 
-  const prevMonth = () => {
-    if (currentMonth === 0) {
-      setCurrentMonth(11);
-      setCurrentYear(currentYear - 1);
-    } else {
-      setCurrentMonth(currentMonth - 1);
-    }
-  };
+  // const prevMonth = () => {
+  //   if (currentMonth === 0) {
+  //     setCurrentMonth(11);
+  //     setCurrentYear(currentYear - 1);
+  //   } else setCurrentMonth(currentMonth - 1);
+  // };
 
+  // Time Box Component
   const TimeBox = ({
     type,
     day,
@@ -95,30 +93,33 @@ export default function BookingCalendar({
       "0"
     )}-${String(day).padStart(2, "0")}`;
 
-    const labelMap: Record<string, string> = {
+    const labelMap = {
       am: "08:00 - 12:00",
       pm: "18:00 - 22:00",
       udur: "09:00 - 18:00",
     };
 
     const label = labelMap[type];
-
     const isPast = new Date(dateStr).getTime() < new Date(todayStr).getTime();
+
+    // ✨ Check bookings for this exact date
+    const dayBookings = bookings.filter(
+      (b) => new Date(b.date).toISOString().split("T")[0] === dateStr
+    );
 
     let isAvailable = !isPast;
 
-    if (!disabled && bookings.length > 0 && !isPast) {
-      const dayBookings = bookings.filter(
-        (b) => new Date(b.date).toISOString().split("T")[0] === dateStr
-      );
-
-      isAvailable = !dayBookings.some((b) => {
+    if (!disabled && dayBookings.length > 0 && !isPast) {
+      const isBooked = dayBookings.some((b) => {
         const startHour = parseInt(b.starttime.split(":")[0], 10);
-        if (type === "am" && startHour === 8) return true;
-        if (type === "udur" && startHour === 9) return true;
-        if (type === "pm" && startHour === 18) return true;
-        return false;
+        return (
+          (type === "am" && startHour === 8) ||
+          (type === "udur" && startHour === 9) ||
+          (type === "pm" && startHour === 18)
+        );
       });
+
+      if (isBooked) isAvailable = false;
     }
 
     const isSelected = selected.some(
@@ -126,20 +127,20 @@ export default function BookingCalendar({
     );
 
     const handleSelect = (day: number, type: "am" | "pm" | "udur") => {
-      const dateStr = `${currentYear}-${String(currentMonth + 1).padStart(
+      const newDate = `${currentYear}-${String(currentMonth + 1).padStart(
         2,
         "0"
       )}-${String(day).padStart(2, "0")}`;
 
       setSelected((prev) => {
-        const removed = prev.filter((d) => d.date !== dateStr);
-        return [...removed, { date: dateStr, type }];
+        const removed = prev.filter((s) => s.date !== newDate);
+        return [...removed, { date: newDate, type }];
       });
     };
 
     if (!isAvailable) {
       return (
-        <div className="text-red-700 bg-red-400 w-full rounded-xl border p-3 text-center text-sm font-medium">
+        <div className="text-red-700 bg-red-400 w-full rounded-xl border p-2 text-center text-sm font-medium">
           Захиалгатай
         </div>
       );
@@ -149,13 +150,12 @@ export default function BookingCalendar({
       <button
         onClick={() => handleSelect(day, type)}
         disabled={!isAvailable}
-        className={`w-full rounded-xl border p-3 text-center text-sm font-medium transition-all
+        className={`w-full rounded-xl border p-2 text-center text-sm font-medium transition-all
           ${
             isSelected
-              ? "bg-blue-600 text-white shadow-md scale-[1.02]"
+              ? "bg-blue-600 text-white shadow-md scale-[1.05]"
               : "bg-white hover:bg-blue-50"
-          }
-        `}
+          }`}
       >
         {label}
       </button>
@@ -175,16 +175,17 @@ export default function BookingCalendar({
 
   return (
     <div className="flex flex-col md:flex-row gap-6 p-6">
-      <div className="w-full md:w-2/3 border-2 rounded-md p-4">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-2xl font-bold text-white">
+      <div className="w-full md:w-2/3 border-2 rounded-md p-4 bg-neutral-800">
+        <div className="flex justify-between items-center mb-4 text-white">
+          <h2 className="text-2xl font-bold">
             {currentYear} – {currentMonth + 1} сар
           </h2>
           <div className="flex gap-3 items-center">
-            <Button variant="outline" onClick={prevMonth}>
-              ‹
-            </Button>
-            <Button variant="outline" onClick={nextMonth}>
+            <Button
+              variant="outline"
+              className="text-black"
+              onClick={nextMonth}
+            >
               ›
             </Button>
           </div>
@@ -206,7 +207,7 @@ export default function BookingCalendar({
                   return (
                     <div
                       key={j}
-                      className="min-h-[110px] bg-gray-200/60 rounded-xl text-white p-2"
+                      className="min-h-[110px] bg-gray-300 rounded-xl p-2"
                     >
                       {day}
                     </div>
@@ -220,12 +221,6 @@ export default function BookingCalendar({
                 const isPast =
                   new Date(dateStr).getTime() < new Date(todayStr).getTime();
 
-                const isDayBooked = bookings.some(
-                  (b) =>
-                    new Date(b.date).toISOString().split("T")[0] === dateStr &&
-                    parseInt(b.starttime.split(":")[0], 10) === 9
-                );
-
                 const dayBookings = bookings.filter(
                   (b) =>
                     new Date(b.date).toISOString().split("T")[0] === dateStr
@@ -237,8 +232,11 @@ export default function BookingCalendar({
                 const isPmBooked = dayBookings.some(
                   (b) => parseInt(b.starttime.split(":")[0], 10) === 18
                 );
+                const isDayBooked = dayBookings.some(
+                  (b) => parseInt(b.starttime.split(":")[0], 10) === 9
+                );
 
-                const isPartialBooked = isAmBooked || isPmBooked;
+                const isPartial = isAmBooked || isPmBooked;
 
                 return (
                   <div
@@ -246,12 +244,11 @@ export default function BookingCalendar({
                     className={`min-h-[110px] border rounded-xl p-2 flex flex-col gap-2 
                       ${
                         isPast
-                          ? "bg-gray-200"
+                          ? "bg-gray-300"
                           : isDayBooked
                           ? "bg-red-300"
                           : "bg-gray-50"
-                      }
-                    `}
+                      }`}
                   >
                     <div
                       className={`text-sm font-medium ${
@@ -259,7 +256,7 @@ export default function BookingCalendar({
                           ? "text-gray-400"
                           : isDayBooked
                           ? "text-red-700"
-                          : "text-gray-700"
+                          : "text-gray-800"
                       }`}
                     >
                       {day}
@@ -278,7 +275,7 @@ export default function BookingCalendar({
                     <TimeBox
                       type="udur"
                       day={day}
-                      disabled={isDayBooked || isPartialBooked || isPast}
+                      disabled={isDayBooked || isPartial || isPast}
                     />
                   </div>
                 );
