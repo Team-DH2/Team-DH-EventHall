@@ -1,7 +1,7 @@
-import prisma from "@/lib/prisma";
-import { NextRequest, NextResponse } from "next/server";
-
-export async function POST(req: NextRequest) {
+import { prisma } from "@/lib/prisma";
+import { NextResponse } from "next/server";
+export const runtime = "nodejs";
+export async function POST() {
   try {
     const body = await req.json();
     const { id } = body;

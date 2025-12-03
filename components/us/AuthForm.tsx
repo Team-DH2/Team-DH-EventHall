@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useTransition } from "react";
 import { Eye, EyeOff } from "lucide-react";
 
 interface AuthFormProps {
@@ -16,45 +16,71 @@ export const AuthForm = ({ view, onViewChange }: AuthFormProps) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [isPending, startTransition] = useTransition();
 
   // ✅ Handle form submission
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError(null);
 
-    if (isLoginView) {
-      const result = await fetch("/api/logIn", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password }),
-      });
-      const data = await result.json();
-
-      console.log("Logging in with:", { email, password });
-    } else {
-      const result = await fetch("/api/signUp", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ name, phone, email, password }),
-      });
-
-      console.log("Signing up with:", { name, phone, email, password });
-      const data = await result.json();
+    // Password validation on sign-up
+    if (!isLoginView) {
+      const passwordRegex =
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+      if (!passwordRegex.test(password)) {
+        setError(
+          "Password must be at least 8 characters long and contain an uppercase letter, a number, and a special character."
+        );
+        return; // Stop the submission if validation fails
+      }
     }
 
-    // You can integrate Clerk or any auth API here
+    startTransition(async () => {
+      const url = isLoginView ? "/api/logIn" : "/api/signUp";
+      const body = isLoginView
+        ? { email, password }
+        : { name, phone, email, password };
+
+      try {
+        const result = await fetch(url, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(body),
+        });
+
+        const data = await result.json();
+
+        if (!result.ok) {
+          setError(data.error || "An unexpected error occurred.");
+          return;
+        }
+
+        // Success! Store token and reload to update header.
+        if (data.token) {
+          localStorage.setItem("token", data.token);
+          window.location.reload();
+        }
+      } catch (e) {
+        setError(`Failed to connect to the server.${e}`);
+      }
+    });
   };
 
   return (
-    <div className="w-full max-w-md rounded-2xl shadow-lg overflow-hidden bg-">
+    <div className=" w-96 rounded-2xl shadow-lg overflow-hidden bg-transparent">
       <div className="p-8 text-white">
         <h2 className="text-3xl font-bold mb-8 text-center">
           {isLoginView ? "Welcome Back" : "Create Account"}
         </h2>
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} noValidate>
+          {error && (
+            <div className="bg-red-500/30 text-red-200 p-3 rounded-md mb-4 text-sm">
+              {error}
+            </div>
+          )}
           {!isLoginView && (
             <>
               <div className="mb-4">
@@ -71,6 +97,7 @@ export const AuthForm = ({ view, onViewChange }: AuthFormProps) => {
              bg-black/20 text-white placeholder:text-gray-300 leading-tight
              focus:outline-none focus:shadow-outline"
                   required
+                  disabled={isPending}
                 />
               </div>
               <div className="mb-4">
@@ -87,6 +114,7 @@ export const AuthForm = ({ view, onViewChange }: AuthFormProps) => {
              bg-black/20 text-white placeholder:text-gray-300 leading-tight
              focus:outline-none focus:shadow-outline"
                   required
+                  disabled={isPending}
                 />
               </div>
             </>
@@ -105,6 +133,7 @@ export const AuthForm = ({ view, onViewChange }: AuthFormProps) => {
              bg-black/20 text-white placeholder:text-gray-300 leading-tight
              focus:outline-none focus:shadow-outline"
               required
+              disabled={isPending}
             />
           </div>
 
@@ -123,10 +152,12 @@ export const AuthForm = ({ view, onViewChange }: AuthFormProps) => {
              bg-black/20 text-white placeholder:text-gray-300 leading-tight
              focus:outline-none focus:shadow-outline"
                 required
+                disabled={isPending}
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
+                disabled={isPending}
                 className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-white"
               >
                 {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
@@ -135,9 +166,10 @@ export const AuthForm = ({ view, onViewChange }: AuthFormProps) => {
           </div>
           <button
             type="submit"
-            className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg focus:outline-none focus:shadow-outline w-full"
+            disabled={isPending}
+            className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg focus:outline-none focus:shadow-outline w-full disabled:bg-blue-800 disabled:cursor-not-allowed"
           >
-            {isLoginView ? "Log In" : "Sign Up"}
+            {isPending ? "Logging..." : isLoginView ? "Log In" : "Sign Up"}
           </button>
         </form>
         <div className="text-center mt-6">
@@ -148,6 +180,7 @@ export const AuthForm = ({ view, onViewChange }: AuthFormProps) => {
             <button
               type="button"
               onClick={() => onViewChange(isLoginView ? "signup" : "login")}
+              disabled={isPending}
               className="font-bold text-blue-400 hover:text-blue-300 bg-transparent border-none"
             >
               {isLoginView ? "Sign Up" : "Log In"}
