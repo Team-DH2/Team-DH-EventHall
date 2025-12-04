@@ -208,24 +208,26 @@ export const Header = () => {
       {/* ---------------- LOGOUT CONFIRMATION DIALOG ---------------- */}
 
       <Dialog open={isLogoutModalOpen} onOpenChange={setIsLogoutModalOpen}>
-        <DialogContent className="p-0 border-none bg-transparent shadow-none w-full border-red-400 flex justify-center items-center  h-fit  data-[state=open]:bg-black/60 data-[state=open]:backdrop-blur-sm [&>button]:hidden">
-          <DialogTitle></DialogTitle>
-          <div className="ml-[-16]  justify-center  w-300">
+        <DialogContent className="p-0 border-none bg-transparent shadow-none max-w-md data-[state=open]:bg-black/60 data-[state=open]:backdrop-blur-sm [&>button]:hidden">
+          <DialogHeader className="sr-only">
+            <DialogTitle>Confirm Log Out</DialogTitle>
+          </DialogHeader>
+          <div className="w-full rounded-2xl shadow-lg overflow-hidden bg-black/80">
             <div className="p-8 text-white">
               <h2 className="text-2xl font-bold mb-4 text-center">Log Out</h2>
-              <p className="text-center text-neutral-300 mb-8">
+              <p className="text-center text-neutral-400 mb-8">
                 Are you sure you want to log out?
               </p>
               <div className="flex gap-4">
                 <button
                   onClick={() => setIsLogoutModalOpen(false)}
-                  className="bg-neutral-600 hover:bg-neutral-700 text-white font-bold py-3 px-4 rounded-lg focus:outline-none focus:shadow-outline w-full"
+                  className="bg-neutral-700 hover:bg-neutral-600 text-white font-bold py-3 px-4 rounded-lg focus:outline-none focus:shadow-outline w-full"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={confirmLogout}
-                  className="bg-blue-600 text-white font-bold py-3 px-4 rounded-lg focus:outline-none focus:shadow-outline w-full"
+                  className="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-4 rounded-lg focus:outline-none focus:shadow-outline w-full"
                 >
                   Log Out
                 </button>

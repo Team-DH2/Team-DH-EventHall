@@ -84,7 +84,7 @@ export default function SelectedEventHall() {
 
   return (
     <div className="min-h-screen bg-black pb-20">
-      <Header></Header>
+      <Header />
       <div className="w-full relative">
         <Carousel
           className="w-full"
@@ -125,7 +125,7 @@ export default function SelectedEventHall() {
 
       <div className="max-w-6xl mx-auto space-y-6 text-white">
         {/* Location and Contact Info */}
-        <div className="bg-gray-500 rounded-sm p-3 my-20">
+        <div className="bg-neutral-900 rounded-lg p-6 my-20">
           <div className="space-y-1">
             <div className="text-white-100 flex gap-5 items-center">
               <FaMapMarkerAlt size={24} color="blue" />
@@ -165,7 +165,7 @@ export default function SelectedEventHall() {
         </div>
 
         {/* Main Info */}
-        <div className="bg-gray-500 rounded-sm">
+        <div className="bg-neutral-900 rounded-lg">
           <div className="p-6 space-y-4">
             <p>{eventHallData?.description}</p>
 
@@ -187,7 +187,7 @@ export default function SelectedEventHall() {
         </div>
 
         <div className="flex  justify-between my-20">
-          <div className="p-6 space-y-4 bg-gray-500 rounded-sm">
+          <div className="p-6 space-y-4 bg-neutral-900 rounded-lg">
             <h3 className="text-2xl font-bold text-white border-b-2 border-blue-500 pb-2 mb-4">
               Нэмэлт мэдээлэл
             </h3>
@@ -204,7 +204,7 @@ export default function SelectedEventHall() {
           </div>
 
           {/* Suitable Events */}
-          <div className="bg-gray-500 rounded-sm">
+          <div className="bg-neutral-900 rounded-lg">
             <div className="p-6 space-y-4">
               <h3 className="text-2xl font-bold text-white border-b-2 border-blue-500 pb-2 mb-4">
                 Тохиромжтой хүлээн авалтууд
@@ -223,7 +223,7 @@ export default function SelectedEventHall() {
           </div>
 
           {/* Hall Specs */}
-          <div className="p-6 space-y-3 bg-gray-500 rounded-sm ">
+          <div className="p-6 space-y-3 bg-neutral-900 rounded-lg ">
             <h3 className="text-2xl font-bold text-white border-b-2 border-blue-500 pb-2 mb-4">
               Танхимын мэдээлэл
             </h3>
@@ -247,7 +247,7 @@ export default function SelectedEventHall() {
           Манай үйлчлүүлэгчдийн сэтгэгдэл
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="bg-gray-500 rounded-lg p-6 space-y-4">
+          <div className="bg-neutral-900 rounded-lg p-6 space-y-4">
             <div className="flex gap-2 text-yellow-400">
               {[...Array(5)].map((_, i) => (
                 <span key={i}>★</span>
@@ -264,7 +264,7 @@ export default function SelectedEventHall() {
           </div>
 
           {/* Testimonial 2 */}
-          <div className="bg-gray-500 rounded-lg p-6 space-y-4">
+          <div className="bg-neutral-900 rounded-lg p-6 space-y-4">
             <div className="flex gap-2 text-yellow-400">
               {[...Array(5)].map((_, i) => (
                 <span key={i}>★</span>
@@ -281,7 +281,7 @@ export default function SelectedEventHall() {
           </div>
 
           {/* Testimonial 3 */}
-          <div className="bg-gray-500 rounded-lg p-6 space-y-4">
+          <div className="bg-neutral-900 rounded-lg p-6 space-y-4">
             <div className="flex gap-2 text-yellow-400">
               {[...Array(5)].map((_, i) => (
                 <span key={i}>★</span>

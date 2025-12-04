@@ -39,9 +39,9 @@ export default function Contact() {
   ];
 
   return (
-    <div className="bg-black text-white font-serif px-50">
+    <div className="bg-black text-white font-serif px-4">
       {/* Section*/}
-      <div className="bg-neutral-900 rounded-2xl w-fit h-[650px] flex flex-col items-center justify-center text-center px-[300px] mt-10">
+      <div className="bg-neutral-900 rounded-2xl flex flex-col items-center justify-center text-center p-10 mt-10 min-h-[400px]">
         <h1 className="text-5xl md:text-6xl font-extrabold mb-6 leading-tight">
           Crafting Unforgettable Moments
         </h1>
@@ -67,7 +67,7 @@ export default function Contact() {
 
       {/* Content */}
       <div className="mt-16 flex justify-center px-4">
-        <div className="bg-[#1A1A1A] rounded-2xl p-10 flex flex-col md:flex-row gap-10 max-w-6xl">
+        <div className="bg-neutral-900 rounded-2xl p-10 flex flex-col md:flex-row gap-10 max-w-6xl w-full">
           <div className="flex-1 text-lg leading-relaxed opacity-90">
             <p>
               Founded on the principle that every event should be a masterpiece,
@@ -92,11 +92,11 @@ export default function Contact() {
               extraordinary.
             </p>
           </div>
-          <button className="w-full md:w-[380px] h-80 object-cover rounded-xl border"></button>
+          <div className="w-full md:w-[380px] h-80 object-cover rounded-xl border border-neutral-700"></div>
         </div>
       </div>
 
-      <div className="bg-neutral-900 rounded-2xl w-full h-[1200px] mt-16 justify-center text-center">
+      <div className="bg-neutral-900 rounded-2xl w-full py-16 mt-16 justify-center text-center">
         <h1 className="text-5xl md:text-6xl font-extrabold mb-6 leading-tight pt-[100px]">
           Meet Our Visionary Team
         </h1>
@@ -111,7 +111,7 @@ export default function Contact() {
           {team.map((member, i) => (
             <div
               key={i}
-              className="bg-neutral-800 rounded-2xl text-center pb-6 overflow-hidden shadow-2xl hover:scale-[1.02] duration-200"
+              className="bg-neutral-800/50 rounded-2xl text-center pb-6 overflow-hidden shadow-2xl hover:scale-[1.02] duration-200"
             >
               <Image
                 src={member.image}
