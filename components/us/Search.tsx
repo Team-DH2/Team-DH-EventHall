@@ -49,7 +49,7 @@ export default function SearchFunction() {
 
     setLoading(false);
   };
-
+  console.log({ results });
   return (
     <div>
       <Popover
@@ -134,6 +134,7 @@ export default function SearchFunction() {
                         key={p.id}
                         className="p-3 bg-white rounded shadow hover:bg-gray-100 transition"
                       >
+                        <img className="h-15 w-15" src={p.image} />
                         <h3 className="font-semibold">{p.name}</h3>
                         <p className="text-sm text-gray-600">{p.genre}</p>
                       </div>

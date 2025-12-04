@@ -12,16 +12,41 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel"; // named exports
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 interface HallType {
   id: number;
-  title: string;
+  name: string;
   overview: string;
-  backdrop_path: string;
+  images: string[];
+  location: string;
   vote_average: number;
+  description: string;
 }
 
-export const CarouselMy = ({ halls }: { halls: HallType[] }) => {
+export const CarouselMy = () => {
+  const [eventHalls, setEventHalls] = React.useState<any[]>([]);
+
+  const getEventHallData = async () => {
+    try {
+      const res = await fetch("/api/event-halls");
+      if (!res.ok) {
+        console.error("API error:", res.status, res.statusText);
+        return;
+      }
+      const data = await res.json();
+
+      console.log("eventHallsData", data);
+      setEventHalls(data.data || []);
+    } catch (error) {
+      console.error("Error fetching event halls:", error);
+    }
+  };
+  useEffect(() => {
+    getEventHallData();
+  }, []);
+
   const [api, setApi] = React.useState<CarouselApi>();
   const [current, setCurrent] = React.useState(0);
   const [count, setCount] = React.useState(0);
@@ -45,7 +70,7 @@ export const CarouselMy = ({ halls }: { halls: HallType[] }) => {
         className="w-full h-full"
       >
         <CarouselContent className="w-full h-full">
-          {halls.slice(0, 5).map((el: HallType) => (
+          {eventHalls.slice(0, 5).map((el: HallType) => (
             <CarouselCard key={el.id} el={el} />
           ))}
         </CarouselContent>
@@ -75,6 +100,7 @@ export const CarouselMy = ({ halls }: { halls: HallType[] }) => {
 };
 
 const CarouselCard = ({ el }: { el: HallType }) => {
+  const router = useRouter();
   return (
     <CarouselItem className="relative h-full w-full p-0! pr-0!">
       {/* Card wrapper */}
@@ -82,10 +108,10 @@ const CarouselCard = ({ el }: { el: HallType }) => {
         {/* Image */}
         <Image
           src={
-            el.backdrop_path ||
+            el.images[0] ||
             "https://img.freepik.com/premium-vector/image-icon-design-vector-template_1309674-943.jpg"
           }
-          alt={el.title}
+          alt={el.name}
           fill={true}
           priority
           sizes="100vw"
@@ -101,7 +127,7 @@ const CarouselCard = ({ el }: { el: HallType }) => {
             Event Hall:
           </p>
           <h1 className="font-extrabold text-4xl lg:text-6xl [text-shadow:0_2px_4px_rgb(0_0_0/0.5)]">
-            {el.title}
+            {el.name}
           </h1>
           <div className="flex items-center text-base mt-2 [text-shadow:0_1px_3px_rgb(0_0_0/0.5)]">
             <svg
@@ -125,7 +151,10 @@ const CarouselCard = ({ el }: { el: HallType }) => {
             {el.overview}
           </p>
           {/* TODO: Replace with <Link> to details page */}
-          <button className="mt-4 w-fit bg-white/90 text-black font-bold py-2 px-6 rounded-md hover:bg-white transition-colors">
+          <button
+            onClick={() => router.push(`/event-halls/${el.id}`)}
+            className="mt-4 w-fit bg-white/90 text-black font-bold py-2 px-6 rounded-md hover:bg-white transition-colors"
+          >
             More Info
           </button>
         </CardContent>
@@ -139,7 +168,7 @@ const CarouselCard = ({ el }: { el: HallType }) => {
             Event Hall:
           </p>
           <h1 className="font-bold text-2xl mb-1 [text-shadow:0_2px_4px_rgb(0_0_0/0.5)]">
-            {el.title}
+            {el.name}
           </h1>
           <div className="flex items-center text-[14px] mb-2 [text-shadow:0_1px_3px_rgb(0_0_0/0.5)]">
             <svg
@@ -158,7 +187,7 @@ const CarouselCard = ({ el }: { el: HallType }) => {
             <span className="text-gray-300 ml-1">/10</span>
           </div>
           <p className="text-[14px] line-clamp-3 [text-shadow:0_1px_3px_rgb(0_0_0/0.5)]">
-            {el.overview}
+            {el.description}
           </p>
           {/* TODO: Replace with <Link> to details page */}
           <button className="mt-3 w-fit bg-white/90 text-black font-bold py-1.5 px-4 rounded-md text-sm hover:bg-white transition-colors">

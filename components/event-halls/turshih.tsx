@@ -162,29 +162,7 @@ export default function Dashboard() {
           </div>
         </div>
         <div>
-          {/* Right Side Panel (Calendar + Recent Activities) */}
           <div className="flex flex-col gap-10">
-            {/* Calendar */}
-            {/* <Card className="bg-[#1a1d29] border border-[#2a2e3d] rounded-2xl p-5">
-              <h2 className="text-lg font-semibold mb-3">November 2025</h2>
-              <div className="grid grid-cols-7 text-center text-gray-400 text-sm gap-2">
-                {"Sun Mon Tue Wed Thu Fri Sat".split(" ").map((d) => (
-                  <div key={d}>{d}</div>
-                ))}
-                {[...Array(30)].map((_, i) => (
-                  <div
-                    key={i}
-                    className={`p-2 rounded-lg ${
-                      i + 1 === 19 ? "bg-blue-600 text-white" : "bg-[#11131b]"
-                    }`}
-                  >
-                    {i + 1}
-                  </div>
-                ))}
-              </div>
-            </Card> */}
-
-            {/* Recent Activities */}
             <Card className="bg-[#1a1d29] border border-[#2a2e3d] rounded-2xl p-5 xl:col-span-2">
               <h2 className="text-lg font-semibold mb-4">Recent Activities</h2>
               <ul className="space-y-4 text-gray-300 text-sm">
