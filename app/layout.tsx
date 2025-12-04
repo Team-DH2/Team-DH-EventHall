@@ -7,6 +7,7 @@ import {
   DM_Serif_Text,
 } from "next/font/google";
 import "./globals.css";
+import { Toaster } from "sonner";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -49,6 +50,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${playfairDisplay.variable} ${lora.variable} ${dmSerifText.variable} antialiased bg-black`}
       >
+        <Toaster position="top-right" richColors />
         {children}
       </body>
     </html>
