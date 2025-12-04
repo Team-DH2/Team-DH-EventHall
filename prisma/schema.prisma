@@ -70,7 +70,6 @@ model performers {
   popularity       Int?
   best_songs       String[]
   music_url        String?   @db.VarChar(500)
-  name1            String?   @db.VarChar(255)
   booking          booking[]
 }
 
@@ -99,6 +98,17 @@ model performers_new {
   availability     String?  @db.VarChar(100)
   rating           Decimal? @db.Decimal
   price            Decimal? @db.Decimal
+}
+
+model Form {
+  id        Int       @id @default(autoincrement())
+  name      String
+  hallname  String
+  location  String
+  number    String
+  email     String
+  images    String[]
+  createdat DateTime? @default(now()) @db.Timestamp(6)
 }
 
 enum bookingstatus {

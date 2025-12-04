@@ -36,8 +36,11 @@ export const Header = () => {
         <div className="flex items-center gap-4 font-bold">
           <ButtonOfNav href="/home" text="Home" />
           <ButtonOfNav href="/event-halls" text="Event Halls" />
-          <ButtonOfNav href="/performers" text="Performers" />
-          <ButtonOfNav href="/hosts" text="Hosts" />
+          <ButtonOfNav
+            href="/performers/dashboard-to-performers"
+            text="Performers"
+          />
+          <ButtonOfNav href="/host" text="Hosts" />
           <ButtonOfNav href="/dashboard" text="Dashboard" />
           <ButtonOfNav href="/contact" text="Contact" />
         </div>

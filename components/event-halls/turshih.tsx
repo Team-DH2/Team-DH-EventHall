@@ -69,9 +69,6 @@ export default function Dashboard() {
       {/* Upcoming Events */}
       <div className="flex">
         <div>
-          {bookings.map((b: any) => (
-            <div>{b.hosts.name}</div>
-          ))}
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
             {bookings.map((b: any) => (
               <div
@@ -134,11 +131,11 @@ export default function Dashboard() {
                 </div>
               </div>
             ))}
-            <div>
-              <Button onClick={() => router.push("/performer")}>
-                Performer Zahialah
-              </Button>
-            </div>
+          </div>
+          <div>
+            <Button onClick={() => router.push("/performer")}>
+              Performer Zahialah
+            </Button>
           </div>
 
           {/* Booking Requests */}
