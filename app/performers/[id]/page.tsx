@@ -205,7 +205,7 @@ export default function PerformerDetailPage() {
           {/* Left Column - Image and Quick Info */}
           <div className="lg:col-span-1">
             <div className="bg-gray-900 rounded-lg overflow-hidden sticky top-8">
-              <div className="relative h-96 bg-gray-800">
+              <div className="relative h-120 bg-gray-800">
                 <img
                   src={performer.image || "https://via.placeholder.com/400x600"}
                   alt={performer.name}
