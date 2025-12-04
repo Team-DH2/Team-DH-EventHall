@@ -28,6 +28,7 @@ const EventHallsListing = () => {
   }, []);
 
   const router = useRouter();
+  console.log("Event Halls:", eventHalls);
 
   const eventHallOnclick = (hall: any) => {
     console.log("Clicked event hall:", hall);
@@ -45,14 +46,14 @@ const EventHallsListing = () => {
 
           {/*  */}
           <div className="flex flex-wrap gap-8">
-            {eventHalls.slice(0, 6).map((hall, i) => (
+            {eventHalls.map((hall, i) => (
               <div
                 key={i}
                 className="w-[300px] h-[500px] bg-neutral-800 rounded-2xl"
               >
                 <img
                   className="w-full h-[230px] rounded-2xl"
-                  src={hall.images[0]}
+                  src={hall.images}
                 />
 
                 <div className="px-4 py-4 space-y-1">

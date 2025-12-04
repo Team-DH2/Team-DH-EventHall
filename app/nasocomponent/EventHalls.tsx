@@ -124,7 +124,7 @@ export default function EventHalls() {
                 <h2 className="text-xl font-semibold">{hall.name}</h2>
 
                 <div className="flex justify-between">
-                  <div className="flex items-center gap-2 text-gray-400">
+                  <div className="flex items-center gap-2 text-gray-400 truncate">
                     <MapPin size={18} />
                     <p>{hall.location}</p>
                   </div>
