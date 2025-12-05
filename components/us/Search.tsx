@@ -49,7 +49,7 @@ export default function SearchFunction() {
 
     setLoading(false);
   };
-  console.log({ results });
+
   return (
     <div>
       <Popover
@@ -92,7 +92,7 @@ export default function SearchFunction() {
 
           {/* C. Илэрц гарсан үед */}
           {results && !loading && searchValue && (
-            <div className="mt-2 space-y-6 max-h-80 overflow-auto text-black">
+            <div className="mt-2 space-y-6 max-h-120 overflow-auto text-black">
               {/* Event Halls */}
               {results?.halls?.length > 0 && (
                 <div>

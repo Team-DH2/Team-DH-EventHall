@@ -144,11 +144,11 @@ const CarouselCard = ({ el }: { el: HallType }) => {
                 strokeLinejoin="round"
               />
             </svg>
-            <span>{el.vote_average}</span>
+            <span>8</span>
             <span className="text-gray-300 ml-1">/10</span>
           </div>
-          <p className="mt-2 lg:mt-4 text-base lg:text-lg max-w-[320px] lg:max-w-[500px] [text-shadow:0_1px_3px_rgb(0_0_0/0.5)]">
-            {el.overview}
+          <p className="mt-2 lg:mt-4 text-base lg:text-lg max-w-[320px] truncate lg:max-w-[500px] [text-shadow:0_1px_3px_rgb(0_0_0/0.5)]">
+            {el.description}
           </p>
           {/* TODO: Replace with <Link> to details page */}
           <button

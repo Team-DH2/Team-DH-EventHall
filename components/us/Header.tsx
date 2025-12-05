@@ -42,8 +42,9 @@ export const Header = () => {
           />
           <ButtonOfNav href="/host" text="Hosts" />
           <ButtonOfNav href="/dashboard" text="Dashboard" />
-          <ButtonOfNav href="/contact" text="Event Hall Form" />
+          <ButtonOfNav href="/eventhall-form" text="Event Hall Form" />
           <ButtonOfNav href="/profile" text="Profile" />
+          <ButtonOfNav href="/adminpanel" text="Admin Panel" />
         </div>
 
         {/* Right Side */}

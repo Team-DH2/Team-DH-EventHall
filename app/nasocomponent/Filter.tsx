@@ -1,6 +1,5 @@
 "use client";
 import { useState } from "react";
-import "./slider.css";
 
 const LOCATIONS = [
   "Баянгол",

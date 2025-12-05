@@ -38,7 +38,7 @@ export default function HostCard({ host }: { host: HostType }) {
   return (
     <div className="bg-[#1E2128FF] p-6 rounded-xl h-[478px] w-[374px] border border-gray-800 text-white hover:border-gray-600 transition">
       <img
-        src="pro.png"
+        src={host.image}
         className="w-24 h-24 rounded-full mx-auto object-cover"
       />
 
